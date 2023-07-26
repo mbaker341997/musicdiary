@@ -1,5 +1,6 @@
 package com.kinnock.musicdiary.diaryuser;
 
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -49,10 +50,12 @@ public class DiaryUserService {
     );
   }
 
+  @Transactional
   public DiaryUser updateDiaryUser(
       Long id,
       String username,
       String email,
+      String bio,
       String profileImageUrl,
       Boolean isAdmin,
       LocalDate dateOfBirth
@@ -78,6 +81,10 @@ public class DiaryUserService {
         throw new IllegalStateException("email taken");
       }
       user.setEmail(email);
+    }
+
+    if (bio != null && !Objects.equals(bio, user.getBio())) {
+      user.setBio(bio);
     }
 
     if (profileImageUrl != null && !Objects.equals(profileImageUrl, user.getProfileImageUrl())) {

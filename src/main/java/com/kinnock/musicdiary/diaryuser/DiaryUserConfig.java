@@ -16,6 +16,7 @@ public class DiaryUserConfig {
           new DiaryUser(
               "NeilKinnock1983",
               "kinnock@fake.com",
+              "I was leader of the Labour Party",
               "https://upload.wikimedia.org/wikipedia/commons/3/37/Official_portrait_of_Neil_Kinnock%2C_Member_of_the_EC_%28cropped%29.jpg",
               false,
               LocalDate.of(1942, Month.MARCH, 28));
@@ -24,6 +25,7 @@ public class DiaryUserConfig {
           new DiaryUser(
               "MargaretThatcher1975",
               "thatcher@fake.com",
+              "I was leader of the Tory Party",
               "https://upload.wikimedia.org/wikipedia/commons/3/3d/Margaret_Thatcher_stock_portrait_%28cropped%29.jpg",
               false,
               LocalDate.of(1925, Month.OCTOBER, 13));

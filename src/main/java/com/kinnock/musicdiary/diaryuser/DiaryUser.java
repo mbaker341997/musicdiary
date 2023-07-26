@@ -24,6 +24,7 @@ public class DiaryUser {
   private Long id;
   private String username;
   private String email;
+  private String bio;
   private String profileImageUrl;
   private Boolean isAdmin;
   private LocalDate dateOfBirth;
@@ -35,11 +36,13 @@ public class DiaryUser {
   public DiaryUser(
       String username,
       String email,
+      String bio,
       String profileImageUrl,
       Boolean isAdmin,
       LocalDate dateOfBirth) {
     this.username = username;
     this.email = email;
+    this.bio = bio;
     this.profileImageUrl = profileImageUrl;
     this.isAdmin = isAdmin;
     this.dateOfBirth = dateOfBirth;
@@ -68,6 +71,14 @@ public class DiaryUser {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public String getBio() {
+    return bio;
+  }
+
+  public void setBio(String bio) {
+    this.bio = bio;
   }
 
   public String getProfileImageUrl() {

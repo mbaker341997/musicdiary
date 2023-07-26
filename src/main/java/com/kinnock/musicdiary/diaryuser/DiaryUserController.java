@@ -48,14 +48,16 @@ public class DiaryUserController {
       @PathVariable("userId") Long userId,
       @RequestParam(required = false) String username,
       @RequestParam(required = false) String email,
+      @RequestParam(required = false) String bio,
       @RequestParam(required = false) String profileImageUrl,
       @RequestParam(required = false) Boolean isAdmin,
       @RequestParam(required = false) LocalDate dateOfBirth
   ) {
     return this.diaryUserService.updateDiaryUser(
         userId, 
-        username, 
-        email, 
+        username,
+        email,
+        bio,
         profileImageUrl, 
         isAdmin, 
         dateOfBirth
