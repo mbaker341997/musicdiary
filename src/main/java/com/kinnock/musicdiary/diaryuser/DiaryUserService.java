@@ -1,7 +1,5 @@
-package com.kinnock.musicdiary.service;
+package com.kinnock.musicdiary.diaryuser;
 
-import com.kinnock.musicdiary.entity.DiaryUser;
-import com.kinnock.musicdiary.repository.DiaryUserRepository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;

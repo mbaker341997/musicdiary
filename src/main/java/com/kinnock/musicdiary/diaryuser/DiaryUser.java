@@ -1,4 +1,4 @@
-package com.kinnock.musicdiary.entity;
+package com.kinnock.musicdiary.diaryuser;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

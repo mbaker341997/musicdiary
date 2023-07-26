@@ -1,7 +1,5 @@
-package com.kinnock.musicdiary.controller;
+package com.kinnock.musicdiary.diaryuser;
 
-import com.kinnock.musicdiary.entity.DiaryUser;
-import com.kinnock.musicdiary.service.DiaryUserService;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

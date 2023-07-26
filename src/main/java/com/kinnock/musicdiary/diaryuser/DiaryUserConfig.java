@@ -1,7 +1,5 @@
-package com.kinnock.musicdiary.config;
+package com.kinnock.musicdiary.diaryuser;
 
-import com.kinnock.musicdiary.entity.DiaryUser;
-import com.kinnock.musicdiary.repository.DiaryUserRepository;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
@@ -10,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class DataConfig {
+public class DiaryUserConfig {
   @Bean
   CommandLineRunner commandLineRunner(DiaryUserRepository repository) {
     return args -> {
