@@ -1,8 +1,26 @@
 package com.kinnock.musicdiary.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 
+@Entity
+@Table
 public class DiaryUser {
+  @Id
+  @SequenceGenerator(
+      name = "diary_user_sequence",
+      sequenceName = "diary_user_sequence",
+      allocationSize = 1
+  )
+  @GeneratedValue(
+      strategy = GenerationType.SEQUENCE,
+      generator = "diary_user_sequence"
+  )
   private Long id;
   private String username;
   private String email;
@@ -10,23 +28,8 @@ public class DiaryUser {
   private Boolean isAdmin;
   private LocalDate dateOfBirth;
 
-  public DiaryUser(Long id) {
-    this.id = id;
-  }
+  public DiaryUser() {
 
-  public DiaryUser(
-      Long id,
-      String username,
-      String email,
-      String profileImageUrl,
-      Boolean isAdmin,
-      LocalDate dateOfBirth) {
-    this.id = id;
-    this.username = username;
-    this.email = email;
-    this.profileImageUrl = profileImageUrl;
-    this.isAdmin = isAdmin;
-    this.dateOfBirth = dateOfBirth;
   }
 
   public DiaryUser(
@@ -46,6 +49,7 @@ public class DiaryUser {
     return id;
   }
 
+  // TODO: do I need this setter?
   public void setId(Long id) {
     this.id = id;
   }
@@ -74,12 +78,12 @@ public class DiaryUser {
     this.profileImageUrl = profileImageUrl;
   }
 
-  public Boolean getAdmin() {
+  public Boolean getIsAdmin() {
     return isAdmin;
   }
 
-  public void setAdmin(Boolean admin) {
-    isAdmin = admin;
+  public void setIsAdmin(Boolean isAdmin) {
+    this.isAdmin = isAdmin;
   }
 
   public LocalDate getDateOfBirth() {
