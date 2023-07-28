@@ -1,7 +1,8 @@
 package com.kinnock.musicdiary.diaryuser;
 
-import jakarta.transaction.Transactional;
-import java.time.LocalDate;
+import com.kinnock.musicdiary.diaryuser.dto.DiaryUserDTO;
+import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPostDTO;
+import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPutDTO;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,87 +19,100 @@ public class DiaryUserService {
     this.diaryUserRepository = diaryUserRepository;
   }
 
-  public List<DiaryUser> getAllDiaryUsers() {
-    return diaryUserRepository.findAll();
+  public List<DiaryUserDTO> getAllDiaryUsers() {
+    return diaryUserRepository.findAll().stream().map(DiaryUserDTO::new).toList();
   }
 
-  public DiaryUser getDiaryUserById(Long userId) {
-    return this.diaryUserRepository
+  public DiaryUserDTO getDiaryUserById(Long userId) {
+    DiaryUser user = this.diaryUserRepository
         .findById(userId)
         .orElseThrow(() -> new IllegalStateException("user not found")); // TODO: some 404
+    return new DiaryUserDTO(user);
   }
 
-  public DiaryUser createDiaryUser(DiaryUser diaryUser) {
-    Optional<DiaryUser> userByEmail = diaryUserRepository.findByEmail(diaryUser.getEmail());
-    Optional<DiaryUser> userByUsername = diaryUserRepository.findByUsername(diaryUser.getUsername());
+  public DiaryUserDTO createDiaryUser(DiaryUserPostDTO diaryUserPostDTO) {
+    Optional<DiaryUser> userByEmail = diaryUserRepository
+        .findByEmail(diaryUserPostDTO.getEmail());
+    Optional<DiaryUser> userByUsername = diaryUserRepository
+        .findByUsername(diaryUserPostDTO.getUsername());
 
     if (userByEmail.isPresent()) {
       throw new IllegalStateException("email taken"); // TODO: my own error system?
     } else if (userByUsername.isPresent()) {
       throw new IllegalStateException("username taken");
     } else {
-      return diaryUserRepository.save(diaryUser);
+      DiaryUser newUser = new DiaryUser(
+          diaryUserPostDTO.getUsername(),
+          diaryUserPostDTO.getEmail(),
+          diaryUserPostDTO.getIsAdmin(),
+          diaryUserPostDTO.getDateOfBirth(),
+          diaryUserPostDTO.getBio(),
+          diaryUserPostDTO.getProfileImageUrl()
+      );
+
+      return new DiaryUserDTO(diaryUserRepository.save(newUser));
     }
   }
 
-  public void deleteDiaryUser(Long userId) {
-    diaryUserRepository.findById(userId).ifPresentOrElse(
-        (diaryUser) -> diaryUserRepository.deleteById(userId),
-        () -> {
-          throw new IllegalStateException("user not found!");
-        }
-    );
+  public DiaryUserDTO deleteDiaryUser(Long userId) {
+    DiaryUser user = diaryUserRepository
+        .findById(userId)
+        .orElseThrow(() -> new IllegalStateException("user not found!")); // TODO: custom exception
+
+    return new DiaryUserDTO(user);
   }
 
-  @Transactional
-  public DiaryUser updateDiaryUser(
+  public DiaryUserDTO updateDiaryUser(
       Long id,
-      String username,
-      String email,
-      String bio,
-      String profileImageUrl,
-      Boolean isAdmin,
-      LocalDate dateOfBirth
+      DiaryUserPutDTO diaryUserPutDTO
   ) {
     DiaryUser user = diaryUserRepository.findById(id)
         .orElseThrow(() -> new IllegalStateException("user not found")); // TODO: custom 404
 
     // TODO: enhanced username format validation
-    if (username != null && !username.isBlank() && !user.getUsername().equals(username)) {
-      Optional<DiaryUser> userByUsername = diaryUserRepository.findByUsername(username);
+    if (diaryUserPutDTO.getUsername() != null
+        && !diaryUserPutDTO.getUsername().isBlank()
+        && !user.getUsername().equals(diaryUserPutDTO.getUsername())
+    ) {
+      Optional<DiaryUser> userByUsername =
+          diaryUserRepository.findByUsername(diaryUserPutDTO.getUsername());
       if (userByUsername.isPresent()) {
         // TODO: throw a 400 or custom
         throw new IllegalStateException("username taken");
       }
-      user.setUsername(username);
+
+      user.setUsername(diaryUserPutDTO.getUsername());
     }
 
     // email format validation
-    if (email != null && email.length() > 0 && !Objects.equals(email, user.getEmail())) {
-      Optional<DiaryUser> userByEmail = diaryUserRepository.findByEmail(email);
+    if (diaryUserPutDTO.getEmail() != null 
+        && !diaryUserPutDTO.getEmail().isBlank() 
+        && !user.getEmail().equals(diaryUserPutDTO.getEmail())
+    ) {
+      Optional<DiaryUser> userByEmail = diaryUserRepository.findByEmail(diaryUserPutDTO.getEmail());
       if (userByEmail.isPresent()) {
         // TODO: throw a 400 or custom
         throw new IllegalStateException("email taken");
       }
-      user.setEmail(email);
+      user.setEmail(diaryUserPutDTO.getEmail());
     }
 
-    if (bio != null && !Objects.equals(bio, user.getBio())) {
-      user.setBio(bio);
+    if (diaryUserPutDTO.getBio() != null && !Objects.equals(diaryUserPutDTO.getBio(), user.getBio())) {
+      user.setBio(diaryUserPutDTO.getBio());
     }
 
-    if (profileImageUrl != null && !Objects.equals(profileImageUrl, user.getProfileImageUrl())) {
-      user.setProfileImageUrl(profileImageUrl);
+    if (diaryUserPutDTO.getProfileImageUrl() != null && !Objects.equals(diaryUserPutDTO.getProfileImageUrl(), user.getProfileImageUrl())) {
+      user.setProfileImageUrl(diaryUserPutDTO.getProfileImageUrl());
     }
 
-    if (isAdmin != null && !Objects.equals(isAdmin, user.getIsAdmin())) {
-      user.setIsAdmin(isAdmin);
+    if (diaryUserPutDTO.getIsAdmin() != null && !Objects.equals(diaryUserPutDTO.getIsAdmin(), user.getIsAdmin())) {
+      user.setIsAdmin(diaryUserPutDTO.getIsAdmin());
     }
 
-    if (dateOfBirth != null && !Objects.equals(dateOfBirth, user.getDateOfBirth())) {
-      user.setDateOfBirth(dateOfBirth);
+    if (diaryUserPutDTO.getDateOfBirth() != null && !Objects.equals(diaryUserPutDTO.getDateOfBirth(), user.getDateOfBirth())) {
+      user.setDateOfBirth(diaryUserPutDTO.getDateOfBirth());
     }
-
-    return user;
+    
+    return new DiaryUserDTO(diaryUserRepository.save(user));
   }
 }

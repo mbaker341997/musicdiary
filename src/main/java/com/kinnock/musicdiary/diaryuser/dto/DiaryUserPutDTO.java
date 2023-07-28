@@ -1,0 +1,62 @@
+package com.kinnock.musicdiary.diaryuser.dto;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.time.LocalDate;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class DiaryUserPutDTO {
+
+  private final String username;
+  
+  private final String email;
+  
+  private final Boolean isAdmin;
+  
+  private final LocalDate dateOfBirth;
+
+  private final String bio;
+
+  private final String profileImageUrl;
+
+  @JsonCreator
+  public DiaryUserPutDTO(
+      String username,
+      String email,
+      String bio,
+      String profileImageUrl,
+      Boolean isAdmin,
+      LocalDate dateOfBirth
+  ) {
+    this.username = username;
+    this.email = email;
+    this.bio = bio;
+    this.profileImageUrl = profileImageUrl;
+    this.isAdmin = isAdmin;
+    this.dateOfBirth = dateOfBirth;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public String getBio() {
+    return bio;
+  }
+
+  public String getProfileImageUrl() {
+    return profileImageUrl;
+  }
+
+  public Boolean getIsAdmin() {
+    return isAdmin;
+  }
+
+  public LocalDate getDateOfBirth() {
+    return dateOfBirth;
+  }
+}

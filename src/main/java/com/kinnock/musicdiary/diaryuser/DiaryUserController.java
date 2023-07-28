@@ -1,8 +1,12 @@
 package com.kinnock.musicdiary.diaryuser;
 
-import java.time.LocalDate;
+import com.kinnock.musicdiary.diaryuser.dto.DiaryUserDTO;
+import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPostDTO;
+import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPutDTO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,10 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-// TODO: use DTOs for everything instead of entity directly
 // TODO: write some tests
 @RestController
 @RequestMapping(path = "api/v1/user")
@@ -27,45 +29,46 @@ public class DiaryUserController {
   }
 
   @PostMapping
-  public DiaryUser createDiaryUser(@RequestBody DiaryUser diaryUser) {
-    return this.diaryUserService.createDiaryUser(diaryUser);
+  public ResponseEntity<DiaryUserDTO> createDiaryUser(@RequestBody DiaryUserPostDTO diaryUserPostDTO) {
+    return new ResponseEntity<>(
+        this.diaryUserService.createDiaryUser(diaryUserPostDTO),
+        HttpStatus.OK
+    );
   }
 
   // TODO: don't have a dump all users endpoint
   @GetMapping
-  public List<DiaryUser> getUsers() {
+  public List<DiaryUserDTO> getUsers() {
     return this.diaryUserService.getAllDiaryUsers();
   }
 
   @GetMapping(path = "{userId}")
-  public DiaryUser getUser(@PathVariable("userId") Long userId) {
-    return this.diaryUserService.getDiaryUserById(userId);
+  public ResponseEntity<DiaryUserDTO> getUser(@PathVariable("userId") Long userId) {
+    return new ResponseEntity<>(
+        this.diaryUserService.getDiaryUserById(userId),
+        HttpStatus.OK
+    );
   }
 
-  // TODO: this one especially needs a DTO 
   @PutMapping(path = "{userId}")
-  public DiaryUser updateDiaryUser(
+  public ResponseEntity<DiaryUserDTO> updateDiaryUser(
       @PathVariable("userId") Long userId,
-      @RequestParam(required = false) String username,
-      @RequestParam(required = false) String email,
-      @RequestParam(required = false) String bio,
-      @RequestParam(required = false) String profileImageUrl,
-      @RequestParam(required = false) Boolean isAdmin,
-      @RequestParam(required = false) LocalDate dateOfBirth
+      @RequestBody DiaryUserPutDTO diaryUserPutDTO
   ) {
-    return this.diaryUserService.updateDiaryUser(
-        userId, 
-        username,
-        email,
-        bio,
-        profileImageUrl, 
-        isAdmin, 
-        dateOfBirth
+    return new ResponseEntity<>(
+        this.diaryUserService.updateDiaryUser(
+            userId,
+            diaryUserPutDTO
+        ),
+        HttpStatus.OK
     );
   }
 
   @DeleteMapping(path = "{userId}")
-  public void deleteDiaryUser(@PathVariable("userId") Long userId) {
-    this.diaryUserService.deleteDiaryUser(userId);
+  public ResponseEntity<DiaryUserDTO> deleteDiaryUser(@PathVariable("userId") Long userId) {
+    return new ResponseEntity<>(
+        this.diaryUserService.deleteDiaryUser(userId),
+        HttpStatus.OK
+    );
   }
 }

@@ -4,30 +4,32 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
 @Table
 public class DiaryUser {
   @Id
-  @SequenceGenerator(
-      name = "diary_user_sequence",
-      sequenceName = "diary_user_sequence",
-      allocationSize = 1
-  )
-  @GeneratedValue(
-      strategy = GenerationType.SEQUENCE,
-      generator = "diary_user_sequence"
-  )
+  @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @NotNull
   private String username;
+
+  @NotNull
   private String email;
-  private String bio;
-  private String profileImageUrl;
+
+  @NotNull
   private Boolean isAdmin;
+
+  @NotNull
   private LocalDate dateOfBirth;
+
+  private String bio;
+
+  private String profileImageUrl;
 
   public DiaryUser() {
 
@@ -36,25 +38,21 @@ public class DiaryUser {
   public DiaryUser(
       String username,
       String email,
-      String bio,
-      String profileImageUrl,
       Boolean isAdmin,
-      LocalDate dateOfBirth) {
+      LocalDate dateOfBirth,
+      String bio,
+      String profileImageUrl
+  ) {
     this.username = username;
     this.email = email;
-    this.bio = bio;
-    this.profileImageUrl = profileImageUrl;
     this.isAdmin = isAdmin;
     this.dateOfBirth = dateOfBirth;
+    this.bio = bio;
+    this.profileImageUrl = profileImageUrl;
   }
 
   public Long getId() {
     return id;
-  }
-
-  // TODO: do I need this setter?
-  public void setId(Long id) {
-    this.id = id;
   }
 
   public String getUsername() {
