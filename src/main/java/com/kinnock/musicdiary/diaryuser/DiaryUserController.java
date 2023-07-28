@@ -36,7 +36,6 @@ public class DiaryUserController {
     );
   }
 
-  // TODO: don't have a dump all users endpoint
   @GetMapping
   public List<DiaryUserDTO> getUsers() {
     return this.diaryUserService.getAllDiaryUsers();

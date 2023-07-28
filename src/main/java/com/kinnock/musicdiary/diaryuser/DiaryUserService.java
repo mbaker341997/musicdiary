@@ -97,19 +97,27 @@ public class DiaryUserService {
       user.setEmail(diaryUserPutDTO.getEmail());
     }
 
-    if (diaryUserPutDTO.getBio() != null && !Objects.equals(diaryUserPutDTO.getBio(), user.getBio())) {
+    if (diaryUserPutDTO.getBio() != null
+        && !Objects.equals(diaryUserPutDTO.getBio(), user.getBio())
+    ) {
       user.setBio(diaryUserPutDTO.getBio());
     }
 
-    if (diaryUserPutDTO.getProfileImageUrl() != null && !Objects.equals(diaryUserPutDTO.getProfileImageUrl(), user.getProfileImageUrl())) {
+    if (diaryUserPutDTO.getProfileImageUrl() != null
+        && !Objects.equals(diaryUserPutDTO.getProfileImageUrl(), user.getProfileImageUrl())
+    ) {
       user.setProfileImageUrl(diaryUserPutDTO.getProfileImageUrl());
     }
 
-    if (diaryUserPutDTO.getIsAdmin() != null && !Objects.equals(diaryUserPutDTO.getIsAdmin(), user.getIsAdmin())) {
+    if (diaryUserPutDTO.getIsAdmin() != null
+        && !Objects.equals(diaryUserPutDTO.getIsAdmin(), user.getIsAdmin())
+    ) {
       user.setIsAdmin(diaryUserPutDTO.getIsAdmin());
     }
 
-    if (diaryUserPutDTO.getDateOfBirth() != null && !Objects.equals(diaryUserPutDTO.getDateOfBirth(), user.getDateOfBirth())) {
+    if (diaryUserPutDTO.getDateOfBirth() != null
+        && !Objects.equals(diaryUserPutDTO.getDateOfBirth(), user.getDateOfBirth())
+    ) {
       user.setDateOfBirth(diaryUserPutDTO.getDateOfBirth());
     }
     
