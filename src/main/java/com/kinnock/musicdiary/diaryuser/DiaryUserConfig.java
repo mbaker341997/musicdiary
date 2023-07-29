@@ -1,5 +1,6 @@
 package com.kinnock.musicdiary.diaryuser;
 
+import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;

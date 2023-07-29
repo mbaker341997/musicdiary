@@ -3,6 +3,7 @@ package com.kinnock.musicdiary.diaryuser;
 import com.kinnock.musicdiary.diaryuser.dto.DiaryUserDTO;
 import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPostDTO;
 import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPutDTO;
+import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,6 +59,8 @@ public class DiaryUserService {
     DiaryUser user = diaryUserRepository
         .findById(userId)
         .orElseThrow(() -> new IllegalStateException("user not found!")); // TODO: custom exception
+
+    diaryUserRepository.delete(user);
 
     return new DiaryUserDTO(user);
   }

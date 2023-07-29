@@ -1,7 +1,10 @@
 package com.kinnock.musicdiary.diaryuser.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.kinnock.musicdiary.utils.DateTimeUtils;
 import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -12,7 +15,8 @@ public class DiaryUserPutDTO {
   private final String email;
   
   private final Boolean isAdmin;
-  
+
+  @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)
   private final LocalDate dateOfBirth;
 
   private final String bio;

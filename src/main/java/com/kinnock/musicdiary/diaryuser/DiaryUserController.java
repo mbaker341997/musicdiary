@@ -43,10 +43,15 @@ public class DiaryUserController {
 
   @GetMapping(path = "{userId}")
   public ResponseEntity<DiaryUserDTO> getUser(@PathVariable("userId") Long userId) {
-    return new ResponseEntity<>(
-        this.diaryUserService.getDiaryUserById(userId),
-        HttpStatus.OK
-    );
+    try {
+      return new ResponseEntity<>(
+          this.diaryUserService.getDiaryUserById(userId),
+          HttpStatus.OK
+      );
+    } catch(IllegalStateException e) {
+      // TODO: refactor once there's a good Exception system in place
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
 
   @PutMapping(path = "{userId}")

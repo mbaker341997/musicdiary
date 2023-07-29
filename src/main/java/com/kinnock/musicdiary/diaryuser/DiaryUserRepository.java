@@ -1,5 +1,6 @@
 package com.kinnock.musicdiary.diaryuser;
 
+import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
