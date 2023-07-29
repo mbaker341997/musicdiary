@@ -1,8 +1,8 @@
-package com.kinnock.musicdiary.diaryuser;
+package com.kinnock.musicdiary.artist;
 
-import com.kinnock.musicdiary.diaryuser.dto.DiaryUserDTO;
-import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPostDTO;
-import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPutDTO;
+import com.kinnock.musicdiary.artist.dto.ArtistDTO;
+import com.kinnock.musicdiary.artist.dto.ArtistPostDTO;
+import com.kinnock.musicdiary.artist.dto.ArtistPutDTO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,21 +17,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "api/v1/user")
-public class DiaryUserController {
-
-  private final DiaryUserService diaryUserService;
+@RequestMapping(path = "api/v1/artist")
+public class ArtistController {
+  private final ArtistService artistService;
 
   @Autowired
-  public DiaryUserController(DiaryUserService diaryUserService) {
-    this.diaryUserService = diaryUserService;
+  public ArtistController(ArtistService artistService) {
+    this.artistService = artistService;
   }
 
   @PostMapping
-  public ResponseEntity<DiaryUserDTO> createDiaryUser(@RequestBody DiaryUserPostDTO diaryUserPostDTO) {
+  public ResponseEntity<ArtistDTO> createArtist(@RequestBody ArtistPostDTO artistPostDTO) {
     try {
       return new ResponseEntity<>(
-          this.diaryUserService.createDiaryUser(diaryUserPostDTO),
+          this.artistService.createArtist(artistPostDTO),
           HttpStatus.OK
       );
     } catch (IllegalStateException e) {
@@ -40,11 +39,11 @@ public class DiaryUserController {
     }
   }
 
-  @GetMapping(path = "{userId}")
-  public ResponseEntity<DiaryUserDTO> getUser(@PathVariable("userId") Long userId) {
+  @GetMapping(path = "{artistId}")
+  public ResponseEntity<ArtistDTO> getArtist(@PathVariable("artistId") Long artistId) {
     try {
       return new ResponseEntity<>(
-          this.diaryUserService.getDiaryUserById(userId),
+          this.artistService.getArtistById(artistId),
           HttpStatus.OK
       );
     } catch (IllegalStateException e) {
@@ -54,20 +53,20 @@ public class DiaryUserController {
   }
 
   @GetMapping
-  public List<DiaryUserDTO> getUsers() {
-    return this.diaryUserService.getAllDiaryUsers();
+  public List<ArtistDTO> getArtists() {
+    return this.artistService.getAllArtists();
   }
 
-  @PutMapping(path = "{userId}")
-  public ResponseEntity<DiaryUserDTO> updateDiaryUser(
-      @PathVariable("userId") Long userId,
-      @RequestBody DiaryUserPutDTO diaryUserPutDTO
+  @PutMapping(path = "{artistId}")
+  public ResponseEntity<ArtistDTO> updateArtist(
+      @PathVariable("artistId") Long artistId,
+      @RequestBody ArtistPutDTO artistPutDTO
   ) {
     try {
       return new ResponseEntity<>(
-          this.diaryUserService.updateDiaryUser(
-              userId,
-              diaryUserPutDTO
+          this.artistService.updateArtist(
+              artistId,
+              artistPutDTO
           ),
           HttpStatus.OK
       );
@@ -77,11 +76,11 @@ public class DiaryUserController {
     }
   }
 
-  @DeleteMapping(path = "{userId}")
-  public ResponseEntity<DiaryUserDTO> deleteDiaryUser(@PathVariable("userId") Long userId) {
+  @DeleteMapping(path = "{artistId}")
+  public ResponseEntity<ArtistDTO> deleteArtist(@PathVariable("artistId") Long artistId) {
     try {
       return new ResponseEntity<>(
-          this.diaryUserService.deleteDiaryUser(userId),
+          this.artistService.deleteArtist(artistId),
           HttpStatus.OK
       );
     } catch (IllegalStateException e) {

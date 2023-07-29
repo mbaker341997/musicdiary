@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class DiaryUserConfig {
-  @Bean
+  @Bean(name = "userInitializer")
   CommandLineRunner commandLineRunner(DiaryUserRepository repository) {
     return args -> {
       var kinnock =
