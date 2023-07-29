@@ -4,14 +4,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.kinnock.musicdiary.diaryuser.dto.DiaryUserDTO;
 import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPostDTO;
 import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPutDTO;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.testutils.JsonUtils;
+import com.kinnock.musicdiary.testutils.BaseControllerTest;
+import com.kinnock.musicdiary.testutils.EndpointTest;
 import java.time.LocalDate;
 import java.time.Month;
 import org.junit.jupiter.api.Tag;
@@ -20,18 +20,13 @@ import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 @Tag("Integration")
 @SpringBootTest
 @AutoConfigureMockMvc
-public class DiaryUserControllerTests {
+public class DiaryUserControllerTests extends BaseControllerTest {
+  
   private static final String ENDPOINT = "/api/v1/user";
-
-  @Autowired
-  private MockMvc mvc;
 
   @Autowired
   private DiaryUserRepository diaryUserRepository;
@@ -48,24 +43,24 @@ public class DiaryUserControllerTests {
         LocalDate.of(1913, Month.JULY, 23)
     );
 
-    ResultActions postResultActions = mvc.perform(
-          post(ENDPOINT)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(JsonUtils.stringifyObject(postDTO)));
-    postResultActions.andExpect(status().isOk());
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT), status().isOk())
+            .setRequestBody(postDTO)
+            .build()
+    );
     
     DiaryUser diaryUserEntity = diaryUserRepository
         .findByUsername(postDTO.getUsername())
         .orElseThrow(() -> new AssertionFailedError("diary user not found in database"));
     DiaryUserDTO diaryUserDTO = new DiaryUserDTO(diaryUserEntity);
-
-    postResultActions.andExpect(content().json(JsonUtils.stringifyObject(diaryUserDTO)));
     
     // GET read a user
-    ResultActions getResultActions = mvc.perform(
-        get(ENDPOINT + "/" + diaryUserEntity.getId()));
-    getResultActions.andExpect(status().isOk());
-    getResultActions.andExpect(content().json(JsonUtils.stringifyObject(diaryUserDTO)));
+    this.runTest(
+        new EndpointTest.Builder(
+            get(ENDPOINT + "/" + diaryUserEntity.getId()),
+            status().isOk()
+        ).setResponseBody(diaryUserDTO).build()
+    );
 
     // PUT the user
     DiaryUserPutDTO putDTO = new DiaryUserPutDTO(
@@ -85,33 +80,37 @@ public class DiaryUserControllerTests {
         diaryUserEntity.getIsAdmin(),
         diaryUserEntity.getDateOfBirth()
     );
-    ResultActions putResultActions = mvc.perform(
-        put(ENDPOINT + "/" + diaryUserEntity.getId())
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(JsonUtils.stringifyObject(putDTO)));
-    putResultActions.andExpect(status().isOk());
-    putResultActions.andExpect(content().json(JsonUtils.stringifyObject(updatedResponseDTO)));
+    this.runTest(
+        new EndpointTest.Builder(
+            put(ENDPOINT + "/" + diaryUserEntity.getId()), status().isOk())
+            .setRequestBody(putDTO)
+            .setResponseBody(updatedResponseDTO)
+            .build()
+    );
 
     // GET the update
-    ResultActions getAfterUpdateResultActions = mvc.perform(
-        get(ENDPOINT + "/" + diaryUserEntity.getId()));
-    getAfterUpdateResultActions.andExpect(status().isOk());
-    getAfterUpdateResultActions.andExpect(content()
-        .json(JsonUtils.stringifyObject(updatedResponseDTO))
+    this.runTest(
+        new EndpointTest.Builder(
+            get(ENDPOINT + "/" + diaryUserEntity.getId()),
+            status().isOk()
+        ).setResponseBody(updatedResponseDTO).build()
     );
 
     // delete the user
-    ResultActions deleteResultActions = mvc.perform(
-        delete(ENDPOINT + "/" + diaryUserEntity.getId()));
-    deleteResultActions.andExpect(status().isOk());
-    deleteResultActions.andExpect(content()
-        .json(JsonUtils.stringifyObject(updatedResponseDTO))
+    this.runTest(
+        new EndpointTest.Builder(
+            delete(ENDPOINT + "/" + diaryUserEntity.getId()),
+            status().isOk()
+        ).setResponseBody(updatedResponseDTO).build()
     );
 
     // GET the deleted and no result
-    ResultActions getAfterDelete = mvc.perform(
-        get(ENDPOINT + "/" + diaryUserEntity.getId()));
-    getAfterDelete.andExpect(status().isNotFound());
+    this.runTest(
+        new EndpointTest.Builder(
+            get(ENDPOINT + "/" + diaryUserEntity.getId()),
+            status().isNotFound()
+        ).build()
+    );
   }
 
   @Test
@@ -136,11 +135,11 @@ public class DiaryUserControllerTests {
         false,
         LocalDate.of(1913, Month.JULY, 23)
     );
-    mvc.perform(
-        post(ENDPOINT)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(JsonUtils.stringifyObject(postDTOUsernameTaken)))
-        .andExpect(status().isBadRequest());
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT), status().isBadRequest())
+            .setRequestBody(postDTOUsernameTaken)
+            .build()
+    );
 
     // try to create one where email already taken
     DiaryUserPostDTO postDTOEmailTaken = new DiaryUserPostDTO(
@@ -151,11 +150,11 @@ public class DiaryUserControllerTests {
         false,
         LocalDate.of(1913, Month.JULY, 23)
     );
-    mvc.perform(
-        post(ENDPOINT)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(JsonUtils.stringifyObject(postDTOEmailTaken)))
-        .andExpect(status().isBadRequest());
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT), status().isBadRequest())
+            .setRequestBody(postDTOEmailTaken)
+            .build()
+    );
 
     DiaryUser jenkins = new DiaryUser(
         "RoyJenkins1982",
@@ -176,12 +175,11 @@ public class DiaryUserControllerTests {
         null,
         null
     );
-    mvc.perform(
-        put(ENDPOINT + "/" + jenkins.getId())
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(JsonUtils.stringifyObject(putDTOUsernameTaken)))
-        .andExpect(status().isBadRequest());
-
+    this.runTest(
+        new EndpointTest.Builder(
+            put(ENDPOINT + "/" + jenkins.getId()), status().isBadRequest()
+        ).setRequestBody(putDTOUsernameTaken).build()
+    );
     // try to update to email already taken
     DiaryUserPutDTO putDTOEmailTaken = new DiaryUserPutDTO(
         null,
@@ -191,16 +189,16 @@ public class DiaryUserControllerTests {
         null,
         null
     );
-    mvc.perform(
-            put(ENDPOINT + "/" + jenkins.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtils.stringifyObject(putDTOEmailTaken)))
-        .andExpect(status().isBadRequest());
+    this.runTest(
+        new EndpointTest.Builder(
+            put(ENDPOINT + "/" + jenkins.getId()), status().isBadRequest()
+        ).setRequestBody(putDTOEmailTaken).build()
+    );
   }
 
   @Test
   public void testDiaryUser_UpdateNonExisting() throws Exception {
-    DiaryUserPutDTO putDTOEmailTaken = new DiaryUserPutDTO(
+    DiaryUserPutDTO putDTO = new DiaryUserPutDTO(
         null,
         "steel@fake.com",
         null,
@@ -208,17 +206,20 @@ public class DiaryUserControllerTests {
         null,
         null
     );
-    mvc.perform(
-            put(ENDPOINT + "/9999")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtils.stringifyObject(putDTOEmailTaken)))
-        .andExpect(status().isBadRequest());
+    this.runTest(
+        new EndpointTest.Builder(
+            put(ENDPOINT + "/9999"), status().isBadRequest()
+        ).setRequestBody(putDTO).build()
+    );
   }
 
   @Test
   public void testDiaryUser_DeleteNonExisting() throws Exception {
-    ResultActions deleteResultActions = mvc.perform(
-        delete(ENDPOINT + "/9999"));
-    deleteResultActions.andExpect(status().isBadRequest());
+    this.runTest(
+        new EndpointTest.Builder(
+            delete(ENDPOINT + "/9999"),
+            status().isBadRequest()
+        ).build()
+    );
   }
 }
