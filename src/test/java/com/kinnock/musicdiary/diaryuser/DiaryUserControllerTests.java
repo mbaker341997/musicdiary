@@ -28,9 +28,6 @@ import org.springframework.test.web.servlet.ResultActions;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class DiaryUserControllerTests {
-  private static DiaryUser usernameAlreadyTaken;
-  private static DiaryUser emailAlreadyTaken;
-
   private static final String ENDPOINT = "/api/v1/user";
 
   @Autowired
@@ -41,6 +38,7 @@ public class DiaryUserControllerTests {
 
   @Test
   public void testDiaryUser_HappyPath() throws Exception {
+    // POST
     DiaryUserPostDTO postDTO = new DiaryUserPostDTO(
         "MichaelFoot1980",
         "foot@fake.com",
@@ -50,7 +48,6 @@ public class DiaryUserControllerTests {
         LocalDate.of(1913, Month.JULY, 23)
     );
 
-    // POST
     ResultActions postResultActions = mvc.perform(
           post(ENDPOINT)
             .contentType(MediaType.APPLICATION_JSON)
@@ -118,16 +115,110 @@ public class DiaryUserControllerTests {
   }
 
   @Test
-  public void testDiaryUser_UsernameAlreadyTaken() {
-    // TODO: try to create one where username already taken
+  public void testDiaryUser_alreadyTaken() throws Exception {
+    // create a user
+    DiaryUser steel = new DiaryUser(
+        "DavidSteel1976",
+        "steel@fake.com",
+        false,
+        LocalDate.of(1938, Month.MARCH, 31),
+        "I was leader of the Liberal Party",
+        "https://upload.wikimedia.org/wikipedia/commons/b/b9/Official_portrait_of_The_Lord_Steel_of_Aikwood.jpg"
+    );
+    this.diaryUserRepository.save(steel);
 
-    // TODO: try to update one to a username that's already taken
+    // try to create one where username already taken
+    DiaryUserPostDTO postDTOUsernameTaken = new DiaryUserPostDTO(
+        "DavidSteel1976",
+        "davidsteel@fake.com",
+        "I am not leader of the Liberal Party",
+        null,
+        false,
+        LocalDate.of(1913, Month.JULY, 23)
+    );
+    mvc.perform(
+        post(ENDPOINT)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(JsonUtils.stringifyObject(postDTOUsernameTaken)))
+        .andExpect(status().isBadRequest());
+
+    // try to create one where email already taken
+    DiaryUserPostDTO postDTOEmailTaken = new DiaryUserPostDTO(
+        "DavidSteel1978",
+        "steel@fake.com",
+        "I am not leader of the Liberal Party",
+        null,
+        false,
+        LocalDate.of(1913, Month.JULY, 23)
+    );
+    mvc.perform(
+        post(ENDPOINT)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(JsonUtils.stringifyObject(postDTOEmailTaken)))
+        .andExpect(status().isBadRequest());
+
+    DiaryUser jenkins = new DiaryUser(
+        "RoyJenkins1982",
+        "jenkins@fake.com",
+        false,
+        LocalDate.of(1938, Month.MARCH, 31),
+        "I was leader of the Liberal Party",
+        "https://upload.wikimedia.org/wikipedia/commons/b/b9/Official_portrait_of_The_Lord_Steel_of_Aikwood.jpg"
+    );
+    this.diaryUserRepository.save(jenkins);
+
+    // try to update to username already taken
+    DiaryUserPutDTO putDTOUsernameTaken = new DiaryUserPutDTO(
+        "DavidSteel1976",
+        null,
+        null,
+        null,
+        null,
+        null
+    );
+    mvc.perform(
+        put(ENDPOINT + "/" + jenkins.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(JsonUtils.stringifyObject(putDTOUsernameTaken)))
+        .andExpect(status().isBadRequest());
+
+    // try to update to email already taken
+    DiaryUserPutDTO putDTOEmailTaken = new DiaryUserPutDTO(
+        null,
+        "steel@fake.com",
+        null,
+        null,
+        null,
+        null
+    );
+    mvc.perform(
+            put(ENDPOINT + "/" + jenkins.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtils.stringifyObject(putDTOEmailTaken)))
+        .andExpect(status().isBadRequest());
   }
 
   @Test
-  public void testDiaryUser_EmailAlreadyTaken() {
-    // TODO: try to create one where email already taken
+  public void testDiaryUser_UpdateNonExisting() throws Exception {
+    DiaryUserPutDTO putDTOEmailTaken = new DiaryUserPutDTO(
+        null,
+        "steel@fake.com",
+        null,
+        null,
+        null,
+        null
+    );
+    mvc.perform(
+            put(ENDPOINT + "/9999")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtils.stringifyObject(putDTOEmailTaken)))
+        .andExpect(status().isBadRequest());
+  }
 
-    // TODO: try to update one to an email that's already taken
+  @Test
+  public void testDiaryUser_DeleteNonExisting() throws Exception {
+    ResultActions deleteResultActions = mvc.perform(
+        delete(ENDPOINT + "/9999"));
+    deleteResultActions.andExpect(status().isBadRequest());
   }
 }
