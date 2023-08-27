@@ -41,7 +41,6 @@ public class ArtistService {
     return artistRepository.findAll().stream().map(ArtistDTO::new).toList();
   }
 
-  // U
   public ArtistDTO updateArtist(Long id, ArtistPutDTO putDTO) {
     Artist artist = artistRepository
         .findById(id)

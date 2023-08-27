@@ -1,7 +1,8 @@
 package com.kinnock.musicdiary.album;
 
-import com.kinnock.musicdiary.album.dto.AlbumPostDTO;
 import com.kinnock.musicdiary.album.dto.AlbumDTO;
+import com.kinnock.musicdiary.album.dto.AlbumPostDTO;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,33 +18,51 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "api/v1/album")
 public class AlbumController {
+  private final AlbumService albumService;
+
   @Autowired
-  public AlbumController() {
-    
+  public AlbumController(AlbumService albumService) {
+    this.albumService = albumService;
   }
 
   @PostMapping
   public ResponseEntity<AlbumDTO> createAlbum(@RequestBody AlbumPostDTO albumPostDTO) {
-    return new ResponseEntity<>(HttpStatus.OK);
+    try {
+      return new ResponseEntity<>(this.albumService.createAlbum(albumPostDTO), HttpStatus.OK);
+    } catch (IllegalStateException e) {
+      // TODO: refactor once there's a good Exception system in place
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
   }
 
   @GetMapping(path = "{albumId}")
   public ResponseEntity<AlbumDTO> getAlbum(@PathVariable("albumId") Long albumId) {
-    return new ResponseEntity<>(HttpStatus.OK);
+    try {
+      return new ResponseEntity<>(this.albumService.getAlbumById(albumId), HttpStatus.OK);
+    } catch (IllegalStateException e) {
+      // TODO: refactor once there's a good Exception system in place
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
   }
 
   @GetMapping
-  public ResponseEntity<AlbumDTO> getAlbums() {
-    return new ResponseEntity<>(HttpStatus.OK);
+  public ResponseEntity<List<AlbumDTO>> getAlbums() {
+    return new ResponseEntity<>(this.albumService.getAllAlbums(), HttpStatus.OK);
   }
 
   @PutMapping(path = "{albumId}")
   public ResponseEntity<AlbumDTO> updateAlbum(@PathVariable("albumId") Long albumId) {
+    // TODO: call the update method
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @DeleteMapping(path = "{albumId}")
   public ResponseEntity<AlbumDTO> deleteAlbum(@PathVariable("albumId") Long albumId) {
-    return new ResponseEntity<>(HttpStatus.OK);
+    try {
+      return new ResponseEntity<>(this.albumService.deleteAlbum(albumId), HttpStatus.OK);
+    } catch (IllegalStateException e) {
+      // TODO: refactor once there's a good Exception system in place
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
   }
 }
