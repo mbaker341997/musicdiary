@@ -23,7 +23,6 @@ public class ConcertDTO {
 
   private final String venue;
 
-  // TODO: add setListItems
   private final List<SetListItemDTO> setList;
 
   @JsonCreator
@@ -50,7 +49,7 @@ public class ConcertDTO {
         concert.getArtists().stream().map(Artist::getId).toList(),
         concert.getDate(),
         concert.getVenue(),
-        null // TODO: call the set list item constructor
+        concert.getSetListItems().stream().map(SetListItemDTO::new).toList()
     );
   }
 
