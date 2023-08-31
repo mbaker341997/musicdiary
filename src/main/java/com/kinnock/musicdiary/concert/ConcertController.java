@@ -51,8 +51,7 @@ public class ConcertController {
   @PostMapping(path = "{concertId}")
   public ResponseEntity<ConcertDTO> createSetListItem(
       @PathVariable("concertId") Long concertId,
-      @RequestBody SetListItemPostDTO setListItemPostDTO
-  ) {
+      @RequestBody SetListItemPostDTO setListItemPostDTO) {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 

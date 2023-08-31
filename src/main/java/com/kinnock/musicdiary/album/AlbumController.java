@@ -2,6 +2,7 @@ package com.kinnock.musicdiary.album;
 
 import com.kinnock.musicdiary.album.dto.AlbumDTO;
 import com.kinnock.musicdiary.album.dto.AlbumPostDTO;
+import com.kinnock.musicdiary.album.dto.AlbumPutDTO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,9 +52,12 @@ public class AlbumController {
   }
 
   @PutMapping(path = "{albumId}")
-  public ResponseEntity<AlbumDTO> updateAlbum(@PathVariable("albumId") Long albumId) {
+  public ResponseEntity<AlbumDTO> updateAlbum(
+      @PathVariable("albumId") Long albumId,
+      @RequestBody AlbumPutDTO albumPutDTO
+  ) {
     // TODO: call the update method
-    return new ResponseEntity<>(HttpStatus.OK);
+    return new ResponseEntity<>(this.albumService.updateAlbum(albumId, albumPutDTO), HttpStatus.OK);
   }
 
   @DeleteMapping(path = "{albumId}")

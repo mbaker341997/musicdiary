@@ -10,8 +10,6 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AlbumPutDTO {
-  private final Long submittedById;
-
   private final List<Long> artistIds;
 
   private final String title;
@@ -25,23 +23,17 @@ public class AlbumPutDTO {
 
   @JsonCreator
   public AlbumPutDTO(
-      Long submittedById,
       List<Long> artistIds,
       String title,
       String genre,
       LocalDate releaseDate,
       String coverArtUrl
   ) {
-    this.submittedById = submittedById;
     this.artistIds = artistIds;
     this.title = title;
     this.genre = genre;
     this.releaseDate = releaseDate;
     this.coverArtUrl = coverArtUrl;
-  }
-
-  public Long getSubmittedById() {
-    return submittedById;
   }
 
   public List<Long> getArtistIds() {

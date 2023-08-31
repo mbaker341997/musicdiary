@@ -10,8 +10,6 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConcertPutDTO {
-  private final Long submittedById;
-
   private final List<Long> artistIds;
 
   @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)
@@ -21,19 +19,13 @@ public class ConcertPutDTO {
 
   @JsonCreator
   public ConcertPutDTO(
-      Long submittedById,
       List<Long> artistIds,
       LocalDate date,
       String venue
   ) {
-    this.submittedById = submittedById;
     this.artistIds = artistIds;
     this.date = date;
     this.venue = venue;
-  }
-
-  public Long getSubmittedById() {
-    return submittedById;
   }
 
   public List<Long> getArtistIds() {

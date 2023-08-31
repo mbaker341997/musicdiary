@@ -49,7 +49,7 @@ public class DiaryUserControllerTests extends BaseControllerTest {
             .build()
     );
     
-    DiaryUser diaryUserEntity = diaryUserRepository
+    DiaryUser diaryUserEntity = this.diaryUserRepository
         .findByUsername(postDTO.getUsername())
         .orElseThrow(() -> new AssertionFailedError("diary user not found in database"));
     DiaryUserDTO diaryUserDTO = new DiaryUserDTO(diaryUserEntity);
@@ -114,7 +114,7 @@ public class DiaryUserControllerTests extends BaseControllerTest {
   }
 
   @Test
-  public void testDiaryUser_alreadyTaken() throws Exception {
+  public void testDiaryUser_AlreadyTaken() throws Exception {
     // create a user
     DiaryUser steel = new DiaryUser(
         "DavidSteel1976",
