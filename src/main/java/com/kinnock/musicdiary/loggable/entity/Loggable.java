@@ -32,13 +32,16 @@ public abstract class Loggable {
   @JoinTable(name="artist_loggable")
   private List<Artist> artists;
 
+  private String title;
+
   public Loggable() {
 
   }
 
-  public Loggable(DiaryUser submittedBy, List<Artist> artists) {
+  public Loggable(DiaryUser submittedBy, List<Artist> artists, String title) {
     this.submittedBy = submittedBy;
     this.artists = artists;
+    this.title = title;
   }
 
   public Long getId() {
@@ -59,5 +62,13 @@ public abstract class Loggable {
 
   public void setArtists(List<Artist> artists) {
     this.artists = artists;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
   }
 }

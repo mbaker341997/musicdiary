@@ -15,6 +15,8 @@ public class ConcertPostDTO {
   private final Long submittedById;
   private final List<Long> artistIds;
   @NotEmpty
+  private final String title;
+  @NotEmpty
   @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)
   private final LocalDate date;
   private final String venue;
@@ -23,11 +25,13 @@ public class ConcertPostDTO {
   public ConcertPostDTO(
       Long submittedById,
       List<Long> artistIds,
+      String title,
       LocalDate date,
       String venue
   ) {
     this.submittedById = submittedById;
     this.artistIds = artistIds;
+    this.title = title;
     this.date = date;
     this.venue = venue;
   }
@@ -38,6 +42,10 @@ public class ConcertPostDTO {
 
   public List<Long> getArtistIds() {
     return artistIds;
+  }
+
+  public String getTitle() {
+    return title;
   }
 
   public LocalDate getDate() {

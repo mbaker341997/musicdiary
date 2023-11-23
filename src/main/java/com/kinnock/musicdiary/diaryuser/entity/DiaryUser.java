@@ -17,18 +17,13 @@ public class DiaryUser {
 
   @NotNull
   private String username;
-
   @NotNull
   private String email;
-
   @NotNull
   private Boolean isAdmin;
-
   @NotNull
   private LocalDate dateOfBirth;
-
   private String bio;
-
   private String profileImageUrl;
 
   public DiaryUser() {

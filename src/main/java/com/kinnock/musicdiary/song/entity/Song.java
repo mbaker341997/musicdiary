@@ -12,8 +12,6 @@ import java.util.List;
 
 @Entity
 public class Song extends Loggable {
-  private String title;
-
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "album_id")
   private Album album;
@@ -39,20 +37,11 @@ public class Song extends Loggable {
       String lyricsUrl,
       Integer albumIndex
   ) {
-    super(submittedBy, artists);
-    this.title = title;
+    super(submittedBy, artists, title);
     this.album = album;
     this.length = length;
     this.lyricsUrl = lyricsUrl;
     this.albumIndex = albumIndex;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
   }
 
   public Album getAlbum() {

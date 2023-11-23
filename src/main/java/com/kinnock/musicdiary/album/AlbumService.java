@@ -48,7 +48,6 @@ public class AlbumService {
     return new AlbumDTO(this.albumRepository.save(album));
   }
 
-  // R - ALL
   public AlbumDTO getAlbumById(Long id) {
     Album album = this.albumRepository
         .findById(id)
@@ -95,10 +94,11 @@ public class AlbumService {
 
     EntityUtils.updateNonNullEntityValue(albumPutDTO::getCoverArtUrl, album::setCoverArtUrl);
 
+    // TODO: move towards creating albums and songs at the same time
+
     return new AlbumDTO(this.albumRepository.save(album));
   }
 
-  // D
   public AlbumDTO deleteAlbum(Long id) {
     Album album = this.albumRepository
         .findById(id)

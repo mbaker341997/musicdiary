@@ -1,12 +1,13 @@
-package com.kinnock.musicdiary.concert.dto;
+package com.kinnock.musicdiary.setListItem.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.kinnock.musicdiary.concert.entity.SetListItem;
+import com.kinnock.musicdiary.setListItem.entity.SetListItem;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SetListItemDTO {
   private final Long id;
+  private final Long concertId;
   private final Long songId;
   private final Integer length;
   private final Integer setIndex;
@@ -14,11 +15,13 @@ public class SetListItemDTO {
   @JsonCreator
   public SetListItemDTO(
       Long id,
+      Long concertId,
       Long songId,
       Integer length,
       Integer setIndex
   ) {
     this.id = id;
+    this.concertId = concertId;
     this.songId = songId;
     this.length = length;
     this.setIndex = setIndex;
@@ -27,6 +30,7 @@ public class SetListItemDTO {
   public SetListItemDTO(SetListItem setListItem) {
     this(
         setListItem.getId(),
+        setListItem.getConcert().getId(),
         setListItem.getSong().getId(),
         setListItem.getLength(),
         setListItem.getSetIndex()
@@ -35,6 +39,10 @@ public class SetListItemDTO {
 
   public Long getId() {
     return id;
+  }
+
+  public Long getConcertId() {
+    return concertId;
   }
 
   public Long getSongId() {

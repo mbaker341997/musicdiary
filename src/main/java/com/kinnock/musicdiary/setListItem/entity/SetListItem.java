@@ -1,5 +1,6 @@
-package com.kinnock.musicdiary.concert.entity;
+package com.kinnock.musicdiary.setListItem.entity;
 
+import com.kinnock.musicdiary.concert.entity.Concert;
 import com.kinnock.musicdiary.song.entity.Song;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

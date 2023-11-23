@@ -9,13 +9,9 @@ import java.util.List;
 
 @Entity
 public class Album extends Loggable {
-  private String title;
-
   // TODO: multi-genres with some many-to-many relationship
   private String genre;
-
   private LocalDate releaseDate;
-
   private String coverArtUrl;
 
   public Album() {
@@ -29,19 +25,10 @@ public class Album extends Loggable {
       LocalDate releaseDate,
       String coverArtUrl
   ) {
-    super(submittedBy, artists);
-    this.title = title;
+    super(submittedBy, artists, title);
     this.genre = genre;
     this.releaseDate = releaseDate;
     this.coverArtUrl = coverArtUrl;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
   }
 
   public String getGenre() {

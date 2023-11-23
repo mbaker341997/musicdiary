@@ -1,27 +1,30 @@
-package com.kinnock.musicdiary.concert.dto;
+package com.kinnock.musicdiary.setListItem.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.validation.constraints.NotNull;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SetListItemPostDTO {
-  @NotNull
+public class SetListItemPutDTO {
+  private final Long concertId;
   private final Long songId;
-  @NotNull
   private final Integer length;
-  @NotNull
   private final Integer setIndex;
 
   @JsonCreator
-  public SetListItemPostDTO(
+  public SetListItemPutDTO(
+      Long concertId,
       Long songId,
       Integer length,
       Integer setIndex
   ) {
+    this.concertId = concertId;
     this.songId = songId;
     this.length = length;
     this.setIndex = setIndex;
+  }
+
+  public Long getConcertId() {
+    return concertId;
   }
 
   public Long getSongId() {

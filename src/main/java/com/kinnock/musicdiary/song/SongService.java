@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +26,7 @@ public class SongService {
   private final DiaryUserRepository diaryUserRepository;
   private final ArtistRepository artistRepository;
 
+  @Autowired
   public SongService(
       SongRepository songRepository,
       AlbumRepository albumRepository,
