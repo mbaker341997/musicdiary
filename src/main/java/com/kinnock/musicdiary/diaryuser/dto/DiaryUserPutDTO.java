@@ -9,18 +9,12 @@ import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DiaryUserPutDTO {
-
   private final String username;
-  
   private final String email;
-  
   private final Boolean isAdmin;
-
   @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)
   private final LocalDate dateOfBirth;
-
   private final String bio;
-
   private final String profileImageUrl;
 
   @JsonCreator

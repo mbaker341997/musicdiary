@@ -2,6 +2,8 @@ package com.kinnock.musicdiary.song;
 
 import com.kinnock.musicdiary.song.dto.SongDTO;
 import com.kinnock.musicdiary.song.dto.SongPostDTO;
+import com.kinnock.musicdiary.song.dto.SongPutDTO;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,26 +28,29 @@ public class SongController {
 
   @PostMapping
   public ResponseEntity<SongDTO> createSong(@RequestBody SongPostDTO songPostDTO) {
-    return new ResponseEntity<>(HttpStatus.OK);
+    return new ResponseEntity<>(this.songService.createSong(songPostDTO), HttpStatus.OK);
   }
 
   @GetMapping(path = "{songId}")
   public ResponseEntity<SongDTO> getSong(@PathVariable("songId") Long songId) {
-    return new ResponseEntity<>(HttpStatus.OK);
+    return new ResponseEntity<>(this.songService.getSongById(songId), HttpStatus.OK);
   }
 
   @GetMapping
-  public ResponseEntity<SongDTO> getSongs() {
-    return new ResponseEntity<>(HttpStatus.OK);
+  public ResponseEntity<List<SongDTO>> getSongs() {
+    return new ResponseEntity<>(this.songService.getAllSongs(), HttpStatus.OK);
   }
 
   @PutMapping(path = "{songId}")
-  public ResponseEntity<SongDTO> updateSong(@PathVariable("songId") Long songId) {
-    return new ResponseEntity<>(HttpStatus.OK);
+  public ResponseEntity<SongDTO> updateSong(
+      @PathVariable("songId") Long songId,
+      @RequestBody SongPutDTO songPutDTO
+  ) {
+    return new ResponseEntity<>(this.songService.updateSong(songId, songPutDTO), HttpStatus.OK);
   }
 
   @DeleteMapping(path = "{songId}")
   public ResponseEntity<SongDTO> deleteSong(@PathVariable("songId") Long songId) {
-    return new ResponseEntity<>(HttpStatus.OK);
+    return new ResponseEntity<>(this.songService.deleteSong(songId), HttpStatus.OK);
   }
 }

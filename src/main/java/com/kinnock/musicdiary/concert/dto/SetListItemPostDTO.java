@@ -8,10 +8,8 @@ import jakarta.validation.constraints.NotNull;
 public class SetListItemPostDTO {
   @NotNull
   private final Long songId;
-
   @NotNull
   private final Integer length;
-
   @NotNull
   private final Integer setIndex;
 

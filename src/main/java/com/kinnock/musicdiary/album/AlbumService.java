@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +57,7 @@ public class AlbumService {
   }
 
   public List<AlbumDTO> getAllAlbums() {
-    return albumRepository.findAll().stream().map(AlbumDTO::new).toList();
+    return this.albumRepository.findAll().stream().map(AlbumDTO::new).toList();
   }
 
   public AlbumDTO updateAlbum(Long id, AlbumPutDTO albumPutDTO) {
@@ -66,7 +65,7 @@ public class AlbumService {
         .findById(id)
         .orElseThrow(() -> new IllegalStateException("album not found")); // TODO: some 404
 
-    album.setArtists(EntityUtils.resolveUpdatedFieldValue(
+    EntityUtils.updateEntityValue(
         () -> {
           List<Artist> artistsToUpdate = this.artistRepository.findAllById(albumPutDTO.getArtistIds());
           if (artistsToUpdate.size() != albumPutDTO.getArtistIds().size()) {
@@ -84,33 +83,17 @@ public class AlbumService {
           }
           return artistsToUpdate;
         },
-        l -> l != null && !l.isEmpty(),
-        album::getArtists
-    ));
+        l -> !Objects.isNull(l) && !l.isEmpty(),
+        album::setArtists
+    );
 
-    album.setTitle(EntityUtils.resolveUpdatedFieldValue(
-        albumPutDTO::getTitle,
-        StringUtils::isNotBlank,
-        album::getTitle
-    ));
+    EntityUtils.updateNonBlankStringValue(albumPutDTO::getTitle, album::setTitle);
 
-    album.setGenre(EntityUtils.resolveUpdatedFieldValue(
-        albumPutDTO::getGenre,
-        StringUtils::isNotBlank,
-        album::getGenre
-    ));
+    EntityUtils.updateNonBlankStringValue(albumPutDTO::getGenre, album::setGenre);
 
-    album.setReleaseDate(EntityUtils.resolveUpdatedFieldValue(
-        albumPutDTO::getReleaseDate,
-        Objects::nonNull,
-        album::getReleaseDate
-    ));
+    EntityUtils.updateNonNullEntityValue(albumPutDTO::getReleaseDate, album::setReleaseDate);
 
-    album.setCoverArtUrl(EntityUtils.resolveUpdatedFieldValue(
-        albumPutDTO::getCoverArtUrl,
-        Objects::nonNull,
-        album::getCoverArtUrl
-    ));
+    EntityUtils.updateNonNullEntityValue(albumPutDTO::getCoverArtUrl, album::setCoverArtUrl);
 
     return new AlbumDTO(this.albumRepository.save(album));
   }
@@ -121,7 +104,7 @@ public class AlbumService {
         .findById(id)
         .orElseThrow(() -> new IllegalStateException("album not found")); // TODO: some 404
 
-    albumRepository.delete(album);
+    this.albumRepository.delete(album);
 
     return new AlbumDTO(album);
   }

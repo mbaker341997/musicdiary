@@ -2,13 +2,13 @@ package com.kinnock.musicdiary.album.entity;
 
 import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.logitem.entity.LogItem;
+import com.kinnock.musicdiary.loggable.entity.Loggable;
 import jakarta.persistence.Entity;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-public class Album extends LogItem {
+public class Album extends Loggable {
   private String title;
 
   // TODO: multi-genres with some many-to-many relationship

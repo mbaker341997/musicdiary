@@ -13,13 +13,10 @@ import java.util.List;
 public class ConcertPostDTO {
   @NotEmpty
   private final Long submittedById;
-
   private final List<Long> artistIds;
-
   @NotEmpty
   @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)
   private final LocalDate date;
-
   private final String venue;
 
   @JsonCreator

@@ -7,11 +7,8 @@ import com.kinnock.musicdiary.concert.entity.SetListItem;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SetListItemDTO {
   private final Long id;
-
   private final Long songId;
-
   private final Integer length;
-
   private final Integer setIndex;
 
   @JsonCreator

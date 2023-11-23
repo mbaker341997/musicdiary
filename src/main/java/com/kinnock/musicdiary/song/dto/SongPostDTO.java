@@ -9,17 +9,13 @@ import java.util.List;
 public class SongPostDTO {
   @NotEmpty
   private final Long submittedById;
-
   @NotEmpty
   private final List<Long> artistIds;
-
   @NotEmpty
   private final String title;
-
   private final Long albumId;
-
+  private final Integer length;
   private final String lyricsUrl;
-
   private final Integer albumIndex;
 
   @JsonCreator
@@ -28,6 +24,7 @@ public class SongPostDTO {
       List<Long> artistIds,
       String title,
       Long albumId,
+      Integer length,
       String lyricsUrl,
       Integer albumIndex
   ) {
@@ -35,6 +32,7 @@ public class SongPostDTO {
     this.artistIds = artistIds;
     this.title = title;
     this.albumId = albumId;
+    this.length = length;
     this.lyricsUrl = lyricsUrl;
     this.albumIndex = albumIndex;
   }
@@ -53,6 +51,10 @@ public class SongPostDTO {
 
   public Long getAlbumId() {
     return albumId;
+  }
+
+  public Integer getLength() {
+    return length;
   }
 
   public String getLyricsUrl() {

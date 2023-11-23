@@ -11,14 +11,10 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AlbumPutDTO {
   private final List<Long> artistIds;
-
   private final String title;
-
   private final String genre;
-
   @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)
   private final LocalDate releaseDate;
-
   private final String coverArtUrl;
 
   @JsonCreator

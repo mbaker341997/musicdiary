@@ -11,14 +11,10 @@ import java.time.LocalDate;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ArtistDTO {
   private final Long id;
-
   private final String name;
-
   @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)
   private final LocalDate dateOfBirth;
-
   private final String pictureUrl;
-
   private final String bio;
 
   @JsonCreator

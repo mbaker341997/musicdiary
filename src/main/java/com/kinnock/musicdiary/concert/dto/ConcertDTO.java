@@ -13,16 +13,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConcertDTO {
   private final Long id;
-
   private final Long submittedById;
-
   private final List<Long> artistIds;
-
   @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)
   private final LocalDate date;
-
   private final String venue;
-
   private final List<SetListItemDTO> setList;
 
   @JsonCreator

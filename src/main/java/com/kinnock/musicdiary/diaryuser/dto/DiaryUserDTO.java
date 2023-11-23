@@ -11,15 +11,10 @@ import java.time.LocalDate;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DiaryUserDTO {
   private final Long id;
-
   private final String username;
-
   private final String email;
-
   private final String bio;
-  
   private final String profileImageUrl;
-
   private final Boolean isAdmin;
 
   @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)

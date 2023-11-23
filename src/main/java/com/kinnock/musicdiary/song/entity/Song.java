@@ -3,7 +3,7 @@ package com.kinnock.musicdiary.song.entity;
 import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
 import com.kinnock.musicdiary.album.entity.Album;
-import com.kinnock.musicdiary.logitem.entity.LogItem;
+import com.kinnock.musicdiary.loggable.entity.Loggable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -11,7 +11,7 @@ import jakarta.persistence.ManyToOne;
 import java.util.List;
 
 @Entity
-public class Song extends LogItem {
+public class Song extends Loggable {
   private String title;
 
   @ManyToOne(fetch = FetchType.LAZY)

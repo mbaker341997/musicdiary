@@ -2,7 +2,7 @@ package com.kinnock.musicdiary.concert.entity;
 
 import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.logitem.entity.LogItem;
+import com.kinnock.musicdiary.loggable.entity.Loggable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-public class Concert extends LogItem {
+public class Concert extends Loggable {
   private LocalDate date;
 
   // TODO: have this be in a DB somewhere?

@@ -13,18 +13,13 @@ import java.util.List;
 public class AlbumPostDTO {
   @NotEmpty
   private final Long submittedById;
-
   @NotEmpty
   private final List<Long> artistIds;
-
   @NotEmpty
   private final String title;
-
   private final String genre;
-
   @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)
   private final LocalDate releaseDate;
-
   private final String coverArtUrl;
 
   @JsonCreator

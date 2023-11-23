@@ -6,9 +6,7 @@ import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPutDTO;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
 import com.kinnock.musicdiary.utils.EntityUtils;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +73,7 @@ public class DiaryUserService {
         .orElseThrow(() -> new IllegalStateException("user not found")); // TODO: custom 404
 
     // TODO: enhanced username format validation
-    user.setUsername(EntityUtils.resolveUpdatedFieldValue(
+    EntityUtils.updateNonBlankStringValue(
         () -> {
           var dtoValue = diaryUserPutDTO.getUsername();
           if (this.diaryUserRepository.findByUsername(dtoValue).isPresent()) {
@@ -84,12 +82,11 @@ public class DiaryUserService {
           }
           return dtoValue;
         },
-        StringUtils::isNotBlank,
-        user::getUsername
-      )
+        user::setUsername
     );
 
-    user.setEmail(EntityUtils.resolveUpdatedFieldValue(
+    // TODO: email format validation
+    EntityUtils.updateNonBlankStringValue(
         () -> {
           var dtoValue = diaryUserPutDTO.getEmail();
           if (this.diaryUserRepository.findByEmail(dtoValue).isPresent()) {
@@ -97,35 +94,22 @@ public class DiaryUserService {
             throw new IllegalStateException("email taken");
           }
           return dtoValue;
-        },
-        StringUtils::isNotBlank,
-        user::getEmail
-      )
+        }, user::setEmail
     );
 
-    user.setBio(EntityUtils.resolveUpdatedFieldValue(
-        diaryUserPutDTO::getBio,
-        Objects::nonNull,
-        user::getBio
-    ));
+    EntityUtils.updateNonNullEntityValue(diaryUserPutDTO::getBio, user::setBio);
 
-    user.setProfileImageUrl(EntityUtils.resolveUpdatedFieldValue(
+    EntityUtils.updateNonNullEntityValue(
         diaryUserPutDTO::getProfileImageUrl,
-        Objects::nonNull,
-        user::getProfileImageUrl
-    ));
+        user::setProfileImageUrl
+    );
 
-    user.setIsAdmin(EntityUtils.resolveUpdatedFieldValue(
-        diaryUserPutDTO::getIsAdmin,
-        Objects::nonNull,
-        user::getIsAdmin
-    ));
+    EntityUtils.updateNonNullEntityValue(diaryUserPutDTO::getIsAdmin, user::setIsAdmin);
 
-    user.setDateOfBirth(EntityUtils.resolveUpdatedFieldValue(
+    EntityUtils.updateNonNullEntityValue(
         diaryUserPutDTO::getDateOfBirth,
-        Objects::nonNull,
-        user::getDateOfBirth
-    ));
+        user::setDateOfBirth
+    );
     
     return new DiaryUserDTO(this.diaryUserRepository.save(user));
   }

@@ -1,4 +1,4 @@
-package com.kinnock.musicdiary.logitem.entity;
+package com.kinnock.musicdiary.loggable.entity;
 
 import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
@@ -18,26 +18,25 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "LogItem_Type")
-public abstract class LogItem {
+@DiscriminatorColumn(name = "Loggable_Type")
+public abstract class Loggable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  // TODO: audited entities will probably cover for this when i switch to that
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "diary_user_id", nullable = false)
   private DiaryUser submittedBy;
 
   @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(name="artist_log_item")
+  @JoinTable(name="artist_loggable")
   private List<Artist> artists;
 
-  public LogItem() {
+  public Loggable() {
 
   }
 
-  public LogItem(DiaryUser submittedBy, List<Artist> artists) {
+  public Loggable(DiaryUser submittedBy, List<Artist> artists) {
     this.submittedBy = submittedBy;
     this.artists = artists;
   }

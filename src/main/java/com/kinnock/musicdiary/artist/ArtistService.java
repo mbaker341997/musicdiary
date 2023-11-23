@@ -6,8 +6,6 @@ import com.kinnock.musicdiary.artist.dto.ArtistPutDTO;
 import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.utils.EntityUtils;
 import java.util.List;
-import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,29 +46,13 @@ public class ArtistService {
         .findById(id)
         .orElseThrow(() -> new IllegalStateException("artist not found")); // TODO: 404
 
-    artist.setName(EntityUtils.resolveUpdatedFieldValue(
-        putDTO::getName,
-        StringUtils::isNotBlank,
-        artist::getName
-    ));
+    EntityUtils.updateNonBlankStringValue(putDTO::getName, artist::setName);
 
-    artist.setDateOfBirth(EntityUtils.resolveUpdatedFieldValue(
-        putDTO::getDateOfBirth,
-        Objects::nonNull,
-        artist::getDateOfBirth
-    ));
+    EntityUtils.updateNonNullEntityValue(putDTO::getDateOfBirth, artist::setDateOfBirth);
 
-    artist.setBio(EntityUtils.resolveUpdatedFieldValue(
-        putDTO::getBio,
-        Objects::nonNull,
-        artist::getBio
-    ));
+    EntityUtils.updateNonNullEntityValue(putDTO::getBio, artist::setBio);
 
-    artist.setPictureUrl(EntityUtils.resolveUpdatedFieldValue(
-        putDTO::getPictureUrl,
-        Objects::nonNull,
-        artist::getPictureUrl
-    ));
+    EntityUtils.updateNonNullEntityValue(putDTO::getPictureUrl, artist::setPictureUrl);
 
     return new ArtistDTO(this.artistRepository.save(artist));
   }

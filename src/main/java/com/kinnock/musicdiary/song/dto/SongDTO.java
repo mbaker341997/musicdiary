@@ -9,17 +9,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SongDTO {
   private final Long id;
-  
   private final Long submittedById;
-  
   private final List<Long> artistIds;
-  
   private final String title;
-  
   private final Long albumId;
-
   private final String lyricsUrl;
-
   private final Integer albumIndex;
 
   @JsonCreator

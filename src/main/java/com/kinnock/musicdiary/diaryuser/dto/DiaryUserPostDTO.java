@@ -16,20 +16,15 @@ public class DiaryUserPostDTO {
   @NotEmpty
   @Size(min = 3, message = "username should be at least 3 characters long")
   private final String username;
-
   @NotEmpty
   @Email
   private final String email;
-
   @NotNull
   private final Boolean isAdmin;
-
   @NotNull
   @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)
   private final LocalDate dateOfBirth;
-
   private final String bio;
-
   private final String profileImageUrl;
 
   @JsonCreator
