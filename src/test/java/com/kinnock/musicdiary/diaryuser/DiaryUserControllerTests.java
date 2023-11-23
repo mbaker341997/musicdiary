@@ -101,7 +101,7 @@ public class DiaryUserControllerTests extends BaseControllerTest {
         new EndpointTest.Builder(
             delete(ENDPOINT + "/" + diaryUserEntity.getId()),
             status().isOk()
-        ).setResponseBody(updatedResponseDTO).build()
+        ).build()
     );
 
     // GET the deleted and no result

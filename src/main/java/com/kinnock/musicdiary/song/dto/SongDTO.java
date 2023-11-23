@@ -12,6 +12,7 @@ public class SongDTO {
   private final Long submittedById;
   private final List<Long> artistIds;
   private final String title;
+  private final Integer length;
   private final Long albumId;
   private final String lyricsUrl;
   private final Integer albumIndex;
@@ -23,6 +24,7 @@ public class SongDTO {
       List<Long> artistIds,
       String title,
       Long albumId,
+      Integer length,
       String lyricsUrl,
       Integer albumIndex
   ) {
@@ -31,6 +33,7 @@ public class SongDTO {
     this.artistIds = artistIds;
     this.title = title;
     this.albumId = albumId;
+    this.length = length;
     this.lyricsUrl = lyricsUrl;
     this.albumIndex = albumIndex;
   }
@@ -42,6 +45,7 @@ public class SongDTO {
         song.getArtists().stream().map(Artist::getId).toList(),
         song.getTitle(),
         song.getAlbum().getId(),
+        song.getLength(),
         song.getLyricsUrl(),
         song.getAlbumIndex()
     );
@@ -65,6 +69,10 @@ public class SongDTO {
 
   public Long getAlbumId() {
     return albumId;
+  }
+
+  public Integer getLength() {
+    return length;
   }
 
   public String getLyricsUrl() {

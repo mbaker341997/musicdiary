@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.concert.entity.Concert;
-import com.kinnock.musicdiary.setListItem.dto.SetListItemDTO;
+import com.kinnock.musicdiary.setlistitem.dto.SetListItemDTO;
 import com.kinnock.musicdiary.utils.DateTimeUtils;
 import java.time.LocalDate;
 import java.util.List;

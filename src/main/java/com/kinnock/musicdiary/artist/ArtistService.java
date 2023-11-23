@@ -57,13 +57,11 @@ public class ArtistService {
     return new ArtistDTO(this.artistRepository.save(artist));
   }
 
-  public ArtistDTO deleteArtist(Long id) {
+  public void deleteArtist(Long id) {
     Artist artist = this.artistRepository
         .findById(id)
         .orElseThrow(() -> new IllegalStateException("artist not found")); // TODO: 404
 
     this.artistRepository.delete(artist);
-
-    return new ArtistDTO(artist);
   }
 }

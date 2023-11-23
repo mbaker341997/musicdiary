@@ -9,6 +9,7 @@ import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
 import com.kinnock.musicdiary.utils.EntityUtils;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class AlbumService {
         .orElseThrow(); // TODO: bad request
     Album album = new Album(
         diaryUser,
-        artists,
+        artists.stream().collect(Collectors.toUnmodifiableSet()),
         albumPostDTO.getTitle(),
         albumPostDTO.getGenre(),
         albumPostDTO.getReleaseDate(),
@@ -80,7 +81,8 @@ public class AlbumService {
             // throw some 400
             throw new IllegalStateException("invalid artist ids: " + missingArtistIds);
           }
-          return artistsToUpdate;
+          // using unmodifiable implementation results in an unsupported operation when saving
+          return new HashSet<>(artistsToUpdate);
         },
         l -> !Objects.isNull(l) && !l.isEmpty(),
         album::setArtists
@@ -99,13 +101,11 @@ public class AlbumService {
     return new AlbumDTO(this.albumRepository.save(album));
   }
 
-  public AlbumDTO deleteAlbum(Long id) {
+  public void deleteAlbum(Long id) {
     Album album = this.albumRepository
         .findById(id)
         .orElseThrow(() -> new IllegalStateException("album not found")); // TODO: some 404
 
     this.albumRepository.delete(album);
-
-    return new AlbumDTO(album);
   }
 }

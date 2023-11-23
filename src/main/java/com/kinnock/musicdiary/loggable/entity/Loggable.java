@@ -14,7 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -30,7 +30,7 @@ public abstract class Loggable {
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name="artist_loggable")
-  private List<Artist> artists;
+  private Set<Artist> artists;
 
   private String title;
 
@@ -38,7 +38,7 @@ public abstract class Loggable {
 
   }
 
-  public Loggable(DiaryUser submittedBy, List<Artist> artists, String title) {
+  public Loggable(DiaryUser submittedBy, Set<Artist> artists, String title) {
     this.submittedBy = submittedBy;
     this.artists = artists;
     this.title = title;
@@ -56,11 +56,11 @@ public abstract class Loggable {
     this.submittedBy = submittedBy;
   }
 
-  public List<Artist> getArtists() {
+  public Set<Artist> getArtists() {
     return artists;
   }
 
-  public void setArtists(List<Artist> artists) {
+  public void setArtists(Set<Artist> artists) {
     this.artists = artists;
   }
 

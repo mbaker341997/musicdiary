@@ -42,7 +42,7 @@ public class AlbumController {
       return new ResponseEntity<>(this.albumService.getAlbumById(albumId), HttpStatus.OK);
     } catch (IllegalStateException e) {
       // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
 
@@ -61,9 +61,10 @@ public class AlbumController {
   }
 
   @DeleteMapping(path = "{albumId}")
-  public ResponseEntity<AlbumDTO> deleteAlbum(@PathVariable("albumId") Long albumId) {
+  public ResponseEntity<Void> deleteAlbum(@PathVariable("albumId") Long albumId) {
     try {
-      return new ResponseEntity<>(this.albumService.deleteAlbum(albumId), HttpStatus.OK);
+      this.albumService.deleteAlbum(albumId);
+      return new ResponseEntity<>(HttpStatus.OK);
     } catch (IllegalStateException e) {
       // TODO: refactor once there's a good Exception system in place
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

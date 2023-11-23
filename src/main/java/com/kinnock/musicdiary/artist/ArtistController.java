@@ -77,12 +77,10 @@ public class ArtistController {
   }
 
   @DeleteMapping(path = "{artistId}")
-  public ResponseEntity<ArtistDTO> deleteArtist(@PathVariable("artistId") Long artistId) {
+  public ResponseEntity<Void> deleteArtist(@PathVariable("artistId") Long artistId) {
     try {
-      return new ResponseEntity<>(
-          this.artistService.deleteArtist(artistId),
-          HttpStatus.OK
-      );
+      this.artistService.deleteArtist(artistId);
+      return new ResponseEntity<>(HttpStatus.OK);
     } catch (IllegalStateException e) {
       // TODO: refactor once there's a good Exception system in place
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

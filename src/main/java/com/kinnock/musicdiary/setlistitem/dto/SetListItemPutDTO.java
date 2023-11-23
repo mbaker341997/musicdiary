@@ -1,4 +1,4 @@
-package com.kinnock.musicdiary.setListItem.dto;
+package com.kinnock.musicdiary.setlistitem.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import org.apache.commons.lang3.StringUtils;
 
 public class EntityUtils {
-  // TODO: maybe generic CRUD for all of it?
+  // TODO: maybe a generic framework for all CRUD/Entity/DTO relationships?
 
   // not super fond of how this is changing the value of the entity within but it's convenient
   // I'll let this pattern blow up on me.

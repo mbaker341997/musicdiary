@@ -11,6 +11,7 @@ import com.kinnock.musicdiary.song.dto.SongPostDTO;
 import com.kinnock.musicdiary.song.dto.SongPutDTO;
 import com.kinnock.musicdiary.song.entity.Song;
 import com.kinnock.musicdiary.utils.EntityUtils;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -47,7 +48,7 @@ public class SongService {
         .map(albumId -> this.albumRepository.findById(albumId).orElseThrow()); // TODO: bad request
     Song song = new Song(
         diaryUser,
-        artists,
+        artists.stream().collect(Collectors.toUnmodifiableSet()),
         songPostDTO.getTitle(),
         optionalAlbum.orElse(null),
         songPostDTO.getLength(), // TODO: enforce positive
@@ -93,7 +94,8 @@ public class SongService {
             // throw some 400
             throw new IllegalStateException("invalid artist ids: " + missingArtistIds);
           }
-          return artistsToUpdate;
+          // using unmodifiable implementation results in an unsupported operation when saving
+          return new HashSet<>(artistsToUpdate);
         },
         l -> !Objects.isNull(l) && !l.isEmpty(),
         song::setArtists
@@ -123,14 +125,11 @@ public class SongService {
     return new SongDTO(this.songRepository.save(song));
   }
 
-  // D
-  public SongDTO deleteSong(Long id) {
+  public void deleteSong(Long id) {
     Song song = this.songRepository
         .findById(id)
         .orElseThrow(() -> new IllegalStateException("song not found")); // TODO: 404
 
     this.songRepository.delete(song);
-
-    return new SongDTO(song);
   }
 }

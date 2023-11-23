@@ -3,12 +3,13 @@ package com.kinnock.musicdiary.concert.entity;
 import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
 import com.kinnock.musicdiary.loggable.entity.Loggable;
-import com.kinnock.musicdiary.setListItem.entity.SetListItem;
+import com.kinnock.musicdiary.setlistitem.entity.SetListItem;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Concert extends Loggable {
@@ -24,7 +25,7 @@ public class Concert extends Loggable {
 
   public Concert(
       DiaryUser submittedBy,
-      List<Artist> artists,
+      Set<Artist> artists,
       String title,
       LocalDate date,
       String venue,

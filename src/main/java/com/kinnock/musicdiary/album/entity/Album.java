@@ -5,7 +5,7 @@ import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
 import com.kinnock.musicdiary.loggable.entity.Loggable;
 import jakarta.persistence.Entity;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Album extends Loggable {
@@ -19,7 +19,7 @@ public class Album extends Loggable {
 
   public Album(
       DiaryUser submittedBy,
-      List<Artist> artists,
+      Set<Artist> artists,
       String title,
       String genre,
       LocalDate releaseDate,

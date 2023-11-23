@@ -55,14 +55,12 @@ public class DiaryUserService {
     }
   }
 
-  public DiaryUserDTO deleteDiaryUser(Long userId) {
+  public void deleteDiaryUser(Long userId) {
     DiaryUser user = diaryUserRepository
         .findById(userId)
         .orElseThrow(() -> new IllegalStateException("user not found!")); // TODO: custom exception
 
     this.diaryUserRepository.delete(user);
-
-    return new DiaryUserDTO(user);
   }
 
   public DiaryUserDTO updateDiaryUser(

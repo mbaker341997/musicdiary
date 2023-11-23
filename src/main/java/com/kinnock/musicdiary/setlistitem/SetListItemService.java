@@ -1,11 +1,11 @@
-package com.kinnock.musicdiary.setListItem;
+package com.kinnock.musicdiary.setlistitem;
 
 import com.kinnock.musicdiary.concert.ConcertRepository;
 import com.kinnock.musicdiary.concert.entity.Concert;
-import com.kinnock.musicdiary.setListItem.dto.SetListItemDTO;
-import com.kinnock.musicdiary.setListItem.dto.SetListItemPostDTO;
-import com.kinnock.musicdiary.setListItem.dto.SetListItemPutDTO;
-import com.kinnock.musicdiary.setListItem.entity.SetListItem;
+import com.kinnock.musicdiary.setlistitem.dto.SetListItemDTO;
+import com.kinnock.musicdiary.setlistitem.dto.SetListItemPostDTO;
+import com.kinnock.musicdiary.setlistitem.dto.SetListItemPutDTO;
+import com.kinnock.musicdiary.setlistitem.entity.SetListItem;
 import com.kinnock.musicdiary.song.SongRepository;
 import com.kinnock.musicdiary.song.entity.Song;
 import com.kinnock.musicdiary.utils.EntityUtils;

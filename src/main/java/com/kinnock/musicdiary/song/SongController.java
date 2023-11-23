@@ -33,7 +33,12 @@ public class SongController {
 
   @GetMapping(path = "{songId}")
   public ResponseEntity<SongDTO> getSong(@PathVariable("songId") Long songId) {
-    return new ResponseEntity<>(this.songService.getSongById(songId), HttpStatus.OK);
+    try {
+      return new ResponseEntity<>(this.songService.getSongById(songId), HttpStatus.OK);
+    } catch (IllegalStateException e) {
+      // TODO: refactor once there's a good exception system in place
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
 
   @GetMapping
@@ -50,7 +55,8 @@ public class SongController {
   }
 
   @DeleteMapping(path = "{songId}")
-  public ResponseEntity<SongDTO> deleteSong(@PathVariable("songId") Long songId) {
-    return new ResponseEntity<>(this.songService.deleteSong(songId), HttpStatus.OK);
+  public ResponseEntity<Void> deleteSong(@PathVariable("songId") Long songId) {
+    this.songService.deleteSong(songId);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

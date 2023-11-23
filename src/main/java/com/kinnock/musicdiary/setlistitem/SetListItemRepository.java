@@ -1,6 +1,6 @@
-package com.kinnock.musicdiary.setListItem;
+package com.kinnock.musicdiary.setlistitem;
 
-import com.kinnock.musicdiary.setListItem.entity.SetListItem;
+import com.kinnock.musicdiary.setlistitem.entity.SetListItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SetListItemRepository extends JpaRepository<SetListItem, Long> {

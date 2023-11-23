@@ -1,14 +1,14 @@
 package com.kinnock.musicdiary.song.entity;
 
+import com.kinnock.musicdiary.album.entity.Album;
 import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.album.entity.Album;
 import com.kinnock.musicdiary.loggable.entity.Loggable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Song extends Loggable {
@@ -30,7 +30,7 @@ public class Song extends Loggable {
 
   public Song(
       DiaryUser submittedBy,
-      List<Artist> artists,
+      Set<Artist> artists,
       String title,
       Album album,
       Integer length,

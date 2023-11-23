@@ -1,4 +1,4 @@
-package com.kinnock.musicdiary.setListItem.entity;
+package com.kinnock.musicdiary.setlistitem.entity;
 
 import com.kinnock.musicdiary.concert.entity.Concert;
 import com.kinnock.musicdiary.song.entity.Song;

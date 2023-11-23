@@ -9,6 +9,7 @@ import com.kinnock.musicdiary.concert.entity.Concert;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
 import com.kinnock.musicdiary.utils.EntityUtils;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class ConcertService {
         .orElseThrow(); // TODO: bad request
     Concert concert = new Concert(
         diaryUser,
-        artists,
+        artists.stream().collect(Collectors.toUnmodifiableSet()),
         concertPostDTO.getTitle(),
         concertPostDTO.getDate(),
         concertPostDTO.getVenue(),
@@ -80,7 +81,8 @@ public class ConcertService {
             // throw some 400
             throw new IllegalStateException("invalid artist ids: " + missingArtistIds);
           }
-          return artistsToUpdate;
+          // using unmodifiable implementation results in an unsupported operation when saving
+          return new HashSet<>(artistsToUpdate);
         },
         l -> !Objects.isNull(l) && !l.isEmpty(),
         concert::setArtists

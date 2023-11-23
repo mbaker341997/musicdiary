@@ -1,31 +1,44 @@
-package com.kinnock.musicdiary.setListItem.dto;
+package com.kinnock.musicdiary.setlistitem.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.validation.constraints.NotNull;
+import com.kinnock.musicdiary.setlistitem.entity.SetListItem;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SetListItemPostDTO {
-  @NotNull
+public class SetListItemDTO {
+  private final Long id;
   private final Long concertId;
-  @NotNull // TODO: at some point refactor to make it not have to be tied to a song
   private final Long songId;
-  @NotNull
   private final Integer length;
-  @NotNull
   private final Integer setIndex;
 
   @JsonCreator
-  public SetListItemPostDTO(
+  public SetListItemDTO(
+      Long id,
       Long concertId,
       Long songId,
       Integer length,
       Integer setIndex
   ) {
+    this.id = id;
     this.concertId = concertId;
     this.songId = songId;
     this.length = length;
     this.setIndex = setIndex;
+  }
+
+  public SetListItemDTO(SetListItem setListItem) {
+    this(
+        setListItem.getId(),
+        setListItem.getConcert().getId(),
+        setListItem.getSong().getId(),
+        setListItem.getLength(),
+        setListItem.getSetIndex()
+    );
+  }
+
+  public Long getId() {
+    return id;
   }
 
   public Long getConcertId() {

@@ -1,8 +1,8 @@
-package com.kinnock.musicdiary.setListItem;
+package com.kinnock.musicdiary.setlistitem;
 
-import com.kinnock.musicdiary.setListItem.dto.SetListItemDTO;
-import com.kinnock.musicdiary.setListItem.dto.SetListItemPostDTO;
-import com.kinnock.musicdiary.setListItem.dto.SetListItemPutDTO;
+import com.kinnock.musicdiary.setlistitem.dto.SetListItemDTO;
+import com.kinnock.musicdiary.setlistitem.dto.SetListItemPostDTO;
+import com.kinnock.musicdiary.setlistitem.dto.SetListItemPutDTO;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
