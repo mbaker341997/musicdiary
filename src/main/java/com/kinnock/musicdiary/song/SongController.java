@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "api/v1/song")
+@RequestMapping(path = "api/v1/songs")
 public class SongController {
   private final SongService songService;
 

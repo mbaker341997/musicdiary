@@ -30,7 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AlbumControllerTests extends BaseControllerTest  {
-  private static final String ENDPOINT = "/api/v1/album";
+  private static final String ENDPOINT = "/api/v1/albums";
 
   @Autowired
   private DiaryUserRepository diaryUserRepository;
@@ -43,7 +43,7 @@ public class AlbumControllerTests extends BaseControllerTest  {
   private static AlbumPostDTO testPostDtoBase;
   private static Artist testArtist1;
   private static Artist testArtist2;
-  private static final boolean initialized = false;
+  private static boolean initialized = false;
 
   @BeforeEach
   public void beforeEach() {
@@ -69,6 +69,7 @@ public class AlbumControllerTests extends BaseControllerTest  {
           LocalDate.parse("1999-12-31"),
           "coverArtUrl"
       );
+      initialized = true;
     }
   }
 

@@ -26,7 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @AutoConfigureMockMvc
 public class DiaryUserControllerTests extends BaseControllerTest {
   
-  private static final String ENDPOINT = "/api/v1/user";
+  private static final String ENDPOINT = "/api/v1/users";
 
   @Autowired
   private DiaryUserRepository diaryUserRepository;

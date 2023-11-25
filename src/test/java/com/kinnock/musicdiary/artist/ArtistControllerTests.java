@@ -25,7 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ArtistControllerTests extends BaseControllerTest {
-  private static final String ENDPOINT = "/api/v1/artist";
+  private static final String ENDPOINT = "/api/v1/artists";
 
   private static final ArtistPostDTO ARTIST_POST_DTO_BASE = new ArtistPostDTO(
       "TestMan",

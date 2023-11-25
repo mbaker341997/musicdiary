@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "api/v1/album")
+@RequestMapping(path = "api/v1/albums")
 public class AlbumController {
   private final AlbumService albumService;
 

@@ -33,7 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class SongControllerTests extends BaseControllerTest {
-  private static final String ENDPOINT = "/api/v1/song";
+  private static final String ENDPOINT = "/api/v1/songs";
 
   @Autowired
   private DiaryUserRepository diaryUserRepository;
