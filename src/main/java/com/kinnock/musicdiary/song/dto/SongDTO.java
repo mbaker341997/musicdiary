@@ -3,8 +3,10 @@ package com.kinnock.musicdiary.song.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.kinnock.musicdiary.artist.entity.Artist;
+import com.kinnock.musicdiary.loggable.entity.Loggable;
 import com.kinnock.musicdiary.song.entity.Song;
 import java.util.List;
+import java.util.Optional;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SongDTO {
@@ -44,7 +46,7 @@ public class SongDTO {
         song.getSubmittedBy().getId(),
         song.getArtists().stream().map(Artist::getId).toList(),
         song.getTitle(),
-        song.getAlbum().getId(),
+        Optional.ofNullable(song.getAlbum()).map(Loggable::getId).orElse(null),
         song.getLength(),
         song.getLyricsUrl(),
         song.getAlbumIndex()

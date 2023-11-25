@@ -36,13 +36,18 @@ public class SetListItemController {
     );
   }
 
-  @GetMapping(path = "{SetListItemDTO}")
+  @GetMapping(path = "{setListItemId}")
   public ResponseEntity<SetListItemDTO> getSetListItem(
       @PathVariable("setListItemId") Long setListItemId) {
-    return new ResponseEntity<>(
-        this.setListItemService.getSetListItemById(setListItemId),
-        HttpStatus.OK
-    );
+    try {
+      return new ResponseEntity<>(
+          this.setListItemService.getSetListItemById(setListItemId),
+          HttpStatus.OK
+      );
+    } catch (IllegalStateException e) {
+      // TODO: refactor once there's a good Exception system in place
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
 
   @GetMapping
@@ -62,12 +67,10 @@ public class SetListItemController {
   }
 
   @DeleteMapping(path = "{setListItemId}")
-  public ResponseEntity<SetListItemDTO> deleteSetListItem(
+  public ResponseEntity<Void> deleteSetListItem(
       @PathVariable("setListItemId") Long setListItemId) {
-    return new ResponseEntity<>(
-        this.setListItemService.deleteSetListItem(setListItemId),
-        HttpStatus.OK
-    );
+    this.setListItemService.deleteSetListItem(setListItemId);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
 }

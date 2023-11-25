@@ -8,7 +8,9 @@ import com.kinnock.musicdiary.concert.dto.ConcertPutDTO;
 import com.kinnock.musicdiary.concert.entity.Concert;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
+import com.kinnock.musicdiary.setlistitem.SetListItemRepository;
 import com.kinnock.musicdiary.utils.EntityUtils;
+import jakarta.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -22,16 +24,19 @@ public class ConcertService {
   private final ConcertRepository concertRepository;
   private final DiaryUserRepository diaryUserRepository;
   private final ArtistRepository artistRepository;
+  private final SetListItemRepository setListItemRepository;
 
   @Autowired
   public ConcertService(
       ConcertRepository concertRepository,
       DiaryUserRepository diaryUserRepository,
-      ArtistRepository artistRepository
+      ArtistRepository artistRepository,
+      SetListItemRepository setListItemRepository
   ) {
     this.concertRepository = concertRepository;
     this.diaryUserRepository = diaryUserRepository;
     this.artistRepository = artistRepository;
+    this.setListItemRepository = setListItemRepository;
   }
 
   public ConcertDTO createConcert(ConcertPostDTO concertPostDTO) {
@@ -96,14 +101,15 @@ public class ConcertService {
 
     // TODO: when I get to service endpoints, move towards building concerts and set lists at same time
 
-    return new ConcertDTO(concert);
+    return new ConcertDTO(this.concertRepository.save(concert));
   }
 
-  public ConcertDTO deleteConcert(Long id) {
+  @Transactional
+  public void deleteConcert(Long id) {
     Concert concert = this.concertRepository
         .findById(id)
         .orElseThrow(() -> new IllegalStateException("concert not found"));
+    concert.getSetListItems().forEach(this.setListItemRepository::delete);
     this.concertRepository.delete(concert);
-    return new ConcertDTO(concert);
   }
 }

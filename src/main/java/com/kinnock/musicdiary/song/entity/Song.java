@@ -32,6 +32,18 @@ public class Song extends Loggable {
       DiaryUser submittedBy,
       Set<Artist> artists,
       String title,
+      Integer length,
+      String lyricsUrl
+  ) {
+    super(submittedBy, artists, title);
+    this.length = length;
+    this.lyricsUrl = lyricsUrl;
+  }
+
+  public Song(
+      DiaryUser submittedBy,
+      Set<Artist> artists,
+      String title,
       Album album,
       Integer length,
       String lyricsUrl,

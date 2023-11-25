@@ -8,8 +8,9 @@ import jakarta.validation.constraints.NotNull;
 public class SetListItemPostDTO {
   @NotNull
   private final Long concertId;
-  @NotNull // TODO: at some point refactor to make it not have to be tied to a song
   private final Long songId;
+  @NotNull
+  private final String title;
   @NotNull
   private final Integer length;
   @NotNull
@@ -19,11 +20,13 @@ public class SetListItemPostDTO {
   public SetListItemPostDTO(
       Long concertId,
       Long songId,
+      String title,
       Integer length,
       Integer setIndex
   ) {
     this.concertId = concertId;
     this.songId = songId;
+    this.title = title;
     this.length = length;
     this.setIndex = setIndex;
   }
@@ -34,6 +37,10 @@ public class SetListItemPostDTO {
 
   public Long getSongId() {
     return songId;
+  }
+
+  public String getTitle() {
+    return title;
   }
 
   public Integer getLength() {

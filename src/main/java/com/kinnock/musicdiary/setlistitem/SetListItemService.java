@@ -10,6 +10,7 @@ import com.kinnock.musicdiary.song.SongRepository;
 import com.kinnock.musicdiary.song.entity.Song;
 import com.kinnock.musicdiary.utils.EntityUtils;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,14 +35,16 @@ public class SetListItemService {
     Concert concert = this.concertRepository
         .findById(setListItemPostDTO.getConcertId())
         .orElseThrow(() -> new IllegalStateException("concert not found")); // TODO: 404
-    Song song = this.songRepository.findById(setListItemPostDTO.getSongId()).orElseThrow(); // TODO: 404
+    Optional<Song> song = Optional.ofNullable(setListItemPostDTO.getSongId())
+        .map(id -> this.songRepository.findById(setListItemPostDTO.getSongId()).orElseThrow()); // TODO: 404
     SetListItem setListItem = new SetListItem(
         concert,
-        song,
+        song.orElse(null),
+        setListItemPostDTO.getTitle(),
         setListItemPostDTO.getLength(),
         setListItemPostDTO.getSetIndex() // TODO: handle indexing
     );
-    return new SetListItemDTO(setListItem);
+    return new SetListItemDTO(this.setListItemRepository.save(setListItem));
   }
 
   public SetListItemDTO getSetListItemById(Long id) {
@@ -76,22 +79,23 @@ public class SetListItemService {
         setListItem::setSong
     );
 
+    EntityUtils.updateNonBlankStringValue(putDTO::getTitle, setListItem::setTitle);
+
     // length
     // TODO: enforce positive
     EntityUtils.updateNonNullEntityValue(putDTO::getLength, setListItem::setLength);
 
     // set index
     // TODO: enforce ordering
-    EntityUtils.updateNonNullEntityValue(setListItem::getSetIndex, setListItem::setSetIndex);
+    EntityUtils.updateNonNullEntityValue(putDTO::getSetIndex, setListItem::setSetIndex);
 
-    return new SetListItemDTO(setListItem);
+    return new SetListItemDTO(this.setListItemRepository.save(setListItem));
   }
 
-  public SetListItemDTO deleteSetListItem(Long id) {
+  public void deleteSetListItem(Long id) {
     SetListItem setListItem = this.setListItemRepository
         .findById(id)
         .orElseThrow(() -> new IllegalStateException("set list item not found"));
     this.setListItemRepository.delete(setListItem);
-    return new SetListItemDTO(setListItem);
   }
 }

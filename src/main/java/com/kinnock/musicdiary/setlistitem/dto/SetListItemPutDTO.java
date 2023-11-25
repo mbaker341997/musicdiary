@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class SetListItemPutDTO {
   private final Long concertId;
   private final Long songId;
+  private final String title;
   private final Integer length;
   private final Integer setIndex;
 
@@ -14,11 +15,13 @@ public class SetListItemPutDTO {
   public SetListItemPutDTO(
       Long concertId,
       Long songId,
+      String title,
       Integer length,
       Integer setIndex
   ) {
     this.concertId = concertId;
     this.songId = songId;
+    this.title = title;
     this.length = length;
     this.setIndex = setIndex;
   }
@@ -29,6 +32,10 @@ public class SetListItemPutDTO {
 
   public Long getSongId() {
     return songId;
+  }
+
+  public String getTitle() {
+    return title;
   }
 
   public Integer getLength() {
