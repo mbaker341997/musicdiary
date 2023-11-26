@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -24,12 +25,13 @@ public abstract class Loggable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "diary_user_id", nullable = false)
   private DiaryUser submittedBy;
 
   @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(name="artist_loggable")
+  @JoinTable(name="loggable_artists")
   private Set<Artist> artists;
 
   private String title;

@@ -11,7 +11,9 @@ import java.util.Set;
 public class Album extends Loggable {
   // TODO: multi-genres with some many-to-many relationship
   private String genre;
+
   private LocalDate releaseDate;
+
   private String coverArtUrl;
 
   public Album() {
