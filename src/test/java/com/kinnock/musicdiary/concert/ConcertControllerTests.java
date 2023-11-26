@@ -108,7 +108,7 @@ public class ConcertControllerTests extends BaseControllerTest {
         ).setResponseBody(concertDTO).build()
     );
 
-    // PUT the album
+    // PUT the concert
     ConcertPutDTO concertPutDTO = new ConcertPutDTO(
         List.of(testArtist2.getId()),
         "title2",
@@ -139,7 +139,7 @@ public class ConcertControllerTests extends BaseControllerTest {
         ).setResponseBody(updatedDTO).build()
     );
 
-    // create a set list item for hte concert
+    // create a set list item for the concert
     SetListItem setListItem = new SetListItem(
         concert,
         "set list item",
@@ -172,7 +172,7 @@ public class ConcertControllerTests extends BaseControllerTest {
     );
 
 
-    // delete the album
+    // delete the concert
     this.runTest(
         new EndpointTest.Builder(
             delete(ENDPOINT + "/" + concertDTO.getId()),

@@ -1,4 +1,5 @@
-package com.kinnock.musicdiary.setlistitem;
+package com.kinnock.musicdiary.diaryentry;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -9,14 +10,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.kinnock.musicdiary.artist.ArtistRepository;
 import com.kinnock.musicdiary.artist.entity.Artist;
-import com.kinnock.musicdiary.concert.ConcertRepository;
-import com.kinnock.musicdiary.concert.entity.Concert;
+import com.kinnock.musicdiary.diaryentry.dto.DiaryEntryDTO;
+import com.kinnock.musicdiary.diaryentry.dto.DiaryEntryPostDTO;
+import com.kinnock.musicdiary.diaryentry.dto.DiaryEntryPutDTO;
+import com.kinnock.musicdiary.diaryentry.entity.DiaryEntry;
+import com.kinnock.musicdiary.diaryentry.entity.Rating;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.setlistitem.dto.SetListItemDTO;
-import com.kinnock.musicdiary.setlistitem.dto.SetListItemPostDTO;
-import com.kinnock.musicdiary.setlistitem.dto.SetListItemPutDTO;
-import com.kinnock.musicdiary.setlistitem.entity.SetListItem;
 import com.kinnock.musicdiary.song.SongRepository;
 import com.kinnock.musicdiary.song.entity.Song;
 import com.kinnock.musicdiary.testutils.BaseControllerTest;
@@ -34,23 +34,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Tag("Integration")
 @SpringBootTest
 @AutoConfigureMockMvc
-public class SetListItemControllerTests extends BaseControllerTest {
-  private static final String ENDPOINT = "/api/v1/set-list-items";
+public class DiaryEntryControllerTests extends BaseControllerTest {
+  private static final String ENDPOINT = "/api/v1/diary-entries";
 
   @Autowired
   private DiaryUserRepository diaryUserRepository;
   @Autowired
   private ArtistRepository artistRepository;
   @Autowired
-  private ConcertRepository concertRepository;
-  @Autowired
-  private SetListItemRepository setListItemRepository;
+  private DiaryEntryRepository diaryEntryRepository;
   @Autowired
   private SongRepository songRepository;
 
-  private static SetListItemPostDTO testPostDtoBase;
-  private static Concert concert1;
-  private static Concert concert2;
+  private static DiaryEntryPostDTO testPostDtoBase;
   private static Song song;
   private static boolean initialized = false;
 
@@ -67,47 +63,29 @@ public class SetListItemControllerTests extends BaseControllerTest {
       );
 
       Artist testArtist = new Artist(
-          "SetListItemArtist",
+          "DiaryEntryArtist",
           LocalDate.parse("1973-09-14"),
           "fakeurl",
           "fake bio"
       );
       this.artistRepository.save(testArtist);
 
-      concert1 = new Concert(
-          testUser,
-          Set.of(testArtist),
-          "set list test concert",
-          LocalDate.parse("2023-11-25"),
-          "Some backyard",
-          List.of()
-      );
-      concert2 = new Concert(
-          testUser,
-          Set.of(testArtist),
-          "set list test concert 2",
-          LocalDate.parse("2023-11-25"),
-          "Some backyard",
-          List.of()
-      );
-      this.concertRepository.saveAll(List.of(concert1, concert2));
-
 
       song = new Song(
           testUser,
           Set.of(testArtist),
-          "song title",
+          "song title for diary entry tests",
           12,
           "lyricUrl"
       );
       this.songRepository.save(song);
 
-      testPostDtoBase = new SetListItemPostDTO(
-          concert1.getId(),
-          null,
-          "set list item title",
-          12,
-          1
+      testPostDtoBase = new DiaryEntryPostDTO(
+          testUser.getId(),
+          song.getId(),
+          LocalDate.parse("2023-11-19"),
+          Rating.FIVE,
+          "a review"
       );
 
       initialized = true;
@@ -115,7 +93,7 @@ public class SetListItemControllerTests extends BaseControllerTest {
   }
 
   @Test
-  public void testSetListItem_HappyPath() throws Exception {
+  public void testDiaryEntry_HappyPath() throws Exception {
     // POST
     this.runTest(
         new EndpointTest.Builder(post(ENDPOINT), status().isOk())
@@ -123,64 +101,62 @@ public class SetListItemControllerTests extends BaseControllerTest {
             .build()
     );
 
-    List<SetListItem> setListItems = this.setListItemRepository
-        .findByConcertId(testPostDtoBase.getConcertId());
-    assertEquals(1, setListItems.size());
-    SetListItem setListItem = setListItems.get(0);
-    SetListItemDTO setListItemDTO = new SetListItemDTO(
-        setListItem.getId(),
-        testPostDtoBase.getConcertId(),
-        testPostDtoBase.getSongId(),
-        testPostDtoBase.getTitle(),
-        testPostDtoBase.getLength(),
-        testPostDtoBase.getSetIndex()
+    List<DiaryEntry> diaryEntries = this.diaryEntryRepository
+        .findByDiaryUserId(testPostDtoBase.getUserId());
+    assertEquals(1, diaryEntries.size());
+    DiaryEntry diaryEntry = diaryEntries.get(0);
+    DiaryEntryDTO diaryEntryDTO = new DiaryEntryDTO(
+        diaryEntry.getId(),
+        testPostDtoBase.getUserId(),
+        testPostDtoBase.getLoggableId(),
+        testPostDtoBase.getLogDate(),
+        testPostDtoBase.getRating(),
+        testPostDtoBase.getReview()
     );
 
-    // GET read set list item
+    // GET read diary entrie
     this.runTest(
         new EndpointTest.Builder(
-            get(ENDPOINT + "/" + setListItem.getId()),
+            get(ENDPOINT + "/" + diaryEntry.getId()),
             status().isOk()
-        ).setResponseBody(setListItemDTO).build()
+        ).setResponseBody(diaryEntryDTO).build()
     );
 
-    // PUT the set list item
-    SetListItemPutDTO setListItemPutDTO = new SetListItemPutDTO(
-        concert2.getId(),
-        song.getId(),
-        "updated set list item title",
-        155,
-        2
+    // PUT the diary entry
+    DiaryEntryPutDTO diaryEntryPutDTO = new DiaryEntryPutDTO(
+        LocalDate.parse("2023-10-31"),
+        Rating.FOUR,
+        "I have updated my review"
     );
-    SetListItemDTO updatedDTO = new SetListItemDTO(
-        setListItem.getId(),
-        setListItemPutDTO.getConcertId(),
-        setListItemPutDTO.getSongId(),
-        setListItemPutDTO.getTitle(),
-        setListItemPutDTO.getLength(),
-        setListItemPutDTO.getSetIndex()
+    DiaryEntryDTO updatedDTO = new DiaryEntryDTO(
+        diaryEntry.getId(),
+        diaryEntry.getDiaryUser().getId(),
+        diaryEntry.getLoggable().getId(),
+        diaryEntryPutDTO.getLogDate(),
+        diaryEntryPutDTO.getRating(),
+        diaryEntryPutDTO.getReview()
     );
 
     this.runTest(
         new EndpointTest.Builder(
-            put(ENDPOINT + "/" + setListItemDTO.getId()),
+            put(ENDPOINT + "/" + diaryEntry.getId()),
             status().isOk()
-        ).setRequestBody(setListItemPutDTO).setResponseBody(updatedDTO).build()
+        ).setRequestBody(diaryEntryPutDTO).setResponseBody(updatedDTO).build()
     );
 
     // GET the update
     this.runTest(
         new EndpointTest.Builder(
-            get(ENDPOINT + "/" + setListItemDTO.getId()),
+            get(ENDPOINT + "/" + diaryEntry.getId()),
             status().isOk()
         ).setResponseBody(updatedDTO).build()
     );
 
 
-    // delete the set list item
+    // delete the diary entry
     this.runTest(
         new EndpointTest.Builder(
-            delete(ENDPOINT + "/" + setListItemDTO.getId()),
+            delete(ENDPOINT + "/" + diaryEntry.getId()),
             status().isOk()
         ).build()
     );
@@ -188,7 +164,7 @@ public class SetListItemControllerTests extends BaseControllerTest {
     // get the deleted and no result
     this.runTest(
         new EndpointTest.Builder(
-            get(ENDPOINT + "/" + setListItemDTO.getId()),
+            get(ENDPOINT + "/" + diaryEntry.getId()),
             status().isNotFound()
         ).build()
     );
