@@ -20,6 +20,10 @@ public class DiaryList {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  private String title;
+
+  private String description;
+
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "diary_user_id", nullable = false)
@@ -34,10 +38,14 @@ public class DiaryList {
 
   public DiaryList(
       DiaryUser diaryUser,
-      Set<DiaryListEntry> diaryListEntrySet
+      Set<DiaryListEntry> diaryListEntrySet,
+      String title,
+      String description
   ) {
     this.diaryUser = diaryUser;
     this.diaryListEntrySet = diaryListEntrySet;
+    this.title = title;
+    this.description = description;
   }
 
   public Long getId() {
@@ -59,5 +67,21 @@ public class DiaryList {
   public void setDiaryListEntrySet(
       Set<DiaryListEntry> diaryListEntrySet) {
     this.diaryListEntrySet = diaryListEntrySet;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 }

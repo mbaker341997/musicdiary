@@ -56,7 +56,6 @@ public class AlbumController {
       @PathVariable("albumId") Long albumId,
       @RequestBody AlbumPutDTO albumPutDTO
   ) {
-    // TODO: call the update method
     return new ResponseEntity<>(this.albumService.updateAlbum(albumId, albumPutDTO), HttpStatus.OK);
   }
 
