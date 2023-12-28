@@ -14,7 +14,6 @@ import com.kinnock.musicdiary.loggable.LoggableRepository;
 import com.kinnock.musicdiary.loggable.entity.Loggable;
 import com.kinnock.musicdiary.utils.EntityUtils;
 import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +42,7 @@ public class DiaryListService {
         .orElseThrow(); // TODO: bad request
     DiaryList diaryList = new DiaryList(
         diaryUser,
-        Set.of(),
+        List.of(),
         diaryListPostDTO.getTitle(),
         diaryListPostDTO.getDescription()
     );

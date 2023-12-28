@@ -1,6 +1,9 @@
 package com.kinnock.musicdiary.diarylist;
 
 import com.kinnock.musicdiary.diarylist.dto.DiaryListDTO;
+import com.kinnock.musicdiary.diarylist.dto.DiaryListEntryDTO;
+import com.kinnock.musicdiary.diarylist.dto.DiaryListEntryPostDTO;
+import com.kinnock.musicdiary.diarylist.dto.DiaryListEntryPutDTO;
 import com.kinnock.musicdiary.diarylist.dto.DiaryListPostDTO;
 import com.kinnock.musicdiary.diarylist.dto.DiaryListPutDTO;
 import java.util.List;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "api/v1/diary-lists")
 public class DiaryListController {
+  private static final String ENTRIES_SUB_PATH = "entries";
 
   private final DiaryListService diaryListService;
 
@@ -64,6 +68,65 @@ public class DiaryListController {
   public ResponseEntity<Void> deleteDiaryList(@PathVariable("diaryListId") Long diaryListId) {
     try {
       this.diaryListService.deleteDiaryList(diaryListId);
+      return new ResponseEntity<>(HttpStatus.OK);
+    } catch (IllegalStateException e) {
+      // TODO: refactor once there's a good Exception system in place
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @PostMapping(path = ENTRIES_SUB_PATH)
+  public ResponseEntity<DiaryListEntryDTO> createDiaryListEntry(
+      @RequestBody DiaryListEntryPostDTO postDTO
+  ) {
+    try {
+      return new ResponseEntity<>(
+          this.diaryListService.createDiaryListEntry(postDTO),
+          HttpStatus.OK
+      );
+    } catch (IllegalStateException e) {
+      // TODO: refactor once there's a good Exception system in place
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @GetMapping(path = ENTRIES_SUB_PATH + "/{diaryListEntryId}")
+  public ResponseEntity<DiaryListEntryDTO> getDiaryListEntry(
+      @PathVariable("diaryListEntryId") Long diaryListEntryId
+  ) {
+    try {
+      return new ResponseEntity<>(
+          this.diaryListService.getDiaryListEntryById(diaryListEntryId),
+          HttpStatus.OK
+      );
+    } catch (IllegalStateException e) {
+      // TODO: refactor once there's a good Exception system in place
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @GetMapping(path = ENTRIES_SUB_PATH)
+  public ResponseEntity<List<DiaryListEntryDTO>> getDiaryListEntries() {
+    return new ResponseEntity<>(this.diaryListService.getAllDiaryListEntries(), HttpStatus.OK);
+  }
+
+  @PutMapping(path = ENTRIES_SUB_PATH + "/{diaryListEntryId}")
+  public ResponseEntity<DiaryListEntryDTO> updateDiaryListEntry(
+      @PathVariable("diaryListEntryId") Long diaryListEntryId,
+      @RequestBody DiaryListEntryPutDTO putDTO
+  ) {
+    return new ResponseEntity<>(
+        this.diaryListService.updateDiaryListEntry(diaryListEntryId, putDTO),
+        HttpStatus.OK
+    );
+  }
+
+  @DeleteMapping(path = ENTRIES_SUB_PATH + "/{diaryListEntryId}")
+  public ResponseEntity<Void> deleteDiaryListEntry(
+      @PathVariable("diaryListEntryId") Long diaryListEntryId
+  ) {
+    try {
+      this.diaryListService.deleteDiaryListEntry(diaryListEntryId);
       return new ResponseEntity<>(HttpStatus.OK);
     } catch (IllegalStateException e) {
       // TODO: refactor once there's a good Exception system in place

@@ -11,7 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table
@@ -29,8 +29,8 @@ public class DiaryList {
   @JoinColumn(name = "diary_user_id", nullable = false)
   private DiaryUser diaryUser;
 
-  @OneToMany(mappedBy = "diarylist")
-  private Set<DiaryListEntry> diaryListEntrySet;
+  @OneToMany(mappedBy = "diaryList")
+  private List<DiaryListEntry> diaryListEntries;
 
   public DiaryList() {
 
@@ -38,12 +38,12 @@ public class DiaryList {
 
   public DiaryList(
       DiaryUser diaryUser,
-      Set<DiaryListEntry> diaryListEntrySet,
+      List<DiaryListEntry> diaryListEntries,
       String title,
       String description
   ) {
     this.diaryUser = diaryUser;
-    this.diaryListEntrySet = diaryListEntrySet;
+    this.diaryListEntries = diaryListEntries;
     this.title = title;
     this.description = description;
   }
@@ -60,13 +60,12 @@ public class DiaryList {
     this.diaryUser = diaryUser;
   }
 
-  public Set<DiaryListEntry> getDiaryListEntrySet() {
-    return diaryListEntrySet;
+  public List<DiaryListEntry> getDiaryListEntries() {
+    return diaryListEntries;
   }
 
-  public void setDiaryListEntrySet(
-      Set<DiaryListEntry> diaryListEntrySet) {
-    this.diaryListEntrySet = diaryListEntrySet;
+  public void setDiaryListEntries(List<DiaryListEntry> diaryListEntries) {
+    this.diaryListEntries = diaryListEntries;
   }
 
   public String getTitle() {
