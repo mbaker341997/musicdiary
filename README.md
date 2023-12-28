@@ -5,3 +5,6 @@ Docker containers.
 ```
 psql -h localhost -U postgres
 ```
+
+# Swagger 
+This application runs with swagger. View at http://localhost:8080/swagger-ui/index.html
