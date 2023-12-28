@@ -53,7 +53,7 @@ public class DiaryListController {
   }
 
   @PutMapping(path = "{diaryListId}")
-  public ResponseEntity<DiaryListDTO> updateDiaryLists(
+  public ResponseEntity<DiaryListDTO> updateDiaryList(
       @PathVariable("diaryListId") Long diaryListId,
       @RequestBody DiaryListPutDTO putDTO
   ) {
@@ -61,7 +61,7 @@ public class DiaryListController {
   }
 
   @DeleteMapping(path = "{diaryListId}")
-  public ResponseEntity<Void> deleteDiaryLists(@PathVariable("diaryListId") Long diaryListId) {
+  public ResponseEntity<Void> deleteDiaryList(@PathVariable("diaryListId") Long diaryListId) {
     try {
       this.diaryListService.deleteDiaryList(diaryListId);
       return new ResponseEntity<>(HttpStatus.OK);
