@@ -33,12 +33,7 @@ public class ConcertController {
 
   @GetMapping(path = "{concertId}")
   public ResponseEntity<ConcertDTO> getConcert(@PathVariable("concertId") Long concertId) {
-    try{
-      return new ResponseEntity<>(this.concertService.getConcertById(concertId), HttpStatus.OK);
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    return new ResponseEntity<>(this.concertService.getConcertById(concertId), HttpStatus.OK);
   }
 
   @GetMapping
@@ -59,12 +54,7 @@ public class ConcertController {
 
   @DeleteMapping(path = "{concertId}")
   public ResponseEntity<Void> deleteConcert(@PathVariable("concertId") Long concertId) {
-    try {
-      this.concertService.deleteConcert(concertId);
-      return new ResponseEntity<>(HttpStatus.OK);
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+    this.concertService.deleteConcert(concertId);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

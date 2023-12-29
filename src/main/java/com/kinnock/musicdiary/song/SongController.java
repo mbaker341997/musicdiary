@@ -33,12 +33,7 @@ public class SongController {
 
   @GetMapping(path = "{songId}")
   public ResponseEntity<SongDTO> getSong(@PathVariable("songId") Long songId) {
-    try {
-      return new ResponseEntity<>(this.songService.getSongById(songId), HttpStatus.OK);
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good exception system in place
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    return new ResponseEntity<>(this.songService.getSongById(songId), HttpStatus.OK);
   }
 
   @GetMapping

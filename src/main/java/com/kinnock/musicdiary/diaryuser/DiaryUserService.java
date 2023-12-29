@@ -4,6 +4,8 @@ import com.kinnock.musicdiary.diaryuser.dto.DiaryUserDTO;
 import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPostDTO;
 import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPutDTO;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
+import com.kinnock.musicdiary.exception.BadUserDataException;
+import com.kinnock.musicdiary.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.utils.EntityUtils;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +29,7 @@ public class DiaryUserService {
   public DiaryUserDTO getDiaryUserById(Long userId) {
     DiaryUser user = this.diaryUserRepository
         .findById(userId)
-        .orElseThrow(() -> new IllegalStateException("user not found")); // TODO: some 404
+        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryUser"));
     return new DiaryUserDTO(user);
   }
 
@@ -38,9 +40,9 @@ public class DiaryUserService {
         .findByUsername(diaryUserPostDTO.getUsername());
 
     if (userByEmail.isPresent()) {
-      throw new IllegalStateException("email taken"); // TODO: my own error system?
+      throw new BadUserDataException("email taken");
     } else if (userByUsername.isPresent()) {
-      throw new IllegalStateException("username taken");
+      throw new BadUserDataException("username taken");
     } else {
       DiaryUser newUser = new DiaryUser(
           diaryUserPostDTO.getUsername(),
@@ -58,7 +60,7 @@ public class DiaryUserService {
   public void deleteDiaryUser(Long userId) {
     DiaryUser user = diaryUserRepository
         .findById(userId)
-        .orElseThrow(() -> new IllegalStateException("user not found!")); // TODO: custom exception
+        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryUser"));
 
     this.diaryUserRepository.delete(user);
   }
@@ -68,15 +70,14 @@ public class DiaryUserService {
       DiaryUserPutDTO diaryUserPutDTO
   ) {
     DiaryUser user = this.diaryUserRepository.findById(id)
-        .orElseThrow(() -> new IllegalStateException("user not found")); // TODO: custom 404
+        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryUser"));
 
     // TODO: enhanced username format validation
     EntityUtils.updateNonBlankStringValue(
         () -> {
           var dtoValue = diaryUserPutDTO.getUsername();
           if (this.diaryUserRepository.findByUsername(dtoValue).isPresent()) {
-            // TODO: throw a 400 or custom
-            throw new IllegalStateException("username taken");
+            throw new BadUserDataException("username taken");
           }
           return dtoValue;
         },
@@ -88,8 +89,7 @@ public class DiaryUserService {
         () -> {
           var dtoValue = diaryUserPutDTO.getEmail();
           if (this.diaryUserRepository.findByEmail(dtoValue).isPresent()) {
-            // TODO: throw a 400 or custom
-            throw new IllegalStateException("email taken");
+            throw new BadUserDataException("email taken");
           }
           return dtoValue;
         }, user::setEmail

@@ -28,28 +28,18 @@ public class ArtistController {
 
   @PostMapping
   public ResponseEntity<ArtistDTO> createArtist(@RequestBody ArtistPostDTO artistPostDTO) {
-    try {
-      return new ResponseEntity<>(
-          this.artistService.createArtist(artistPostDTO),
-          HttpStatus.OK
-      );
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+    return new ResponseEntity<>(
+        this.artistService.createArtist(artistPostDTO),
+        HttpStatus.OK
+    );
   }
 
   @GetMapping(path = "{artistId}")
   public ResponseEntity<ArtistDTO> getArtist(@PathVariable("artistId") Long artistId) {
-    try {
-      return new ResponseEntity<>(
-          this.artistService.getArtistById(artistId),
-          HttpStatus.OK
-      );
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    return new ResponseEntity<>(
+        this.artistService.getArtistById(artistId),
+        HttpStatus.OK
+    );
   }
 
   @GetMapping
@@ -62,28 +52,18 @@ public class ArtistController {
       @PathVariable("artistId") Long artistId,
       @RequestBody ArtistPutDTO artistPutDTO
   ) {
-    try {
-      return new ResponseEntity<>(
-          this.artistService.updateArtist(
-              artistId,
-              artistPutDTO
-          ),
-          HttpStatus.OK
-      );
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+    return new ResponseEntity<>(
+        this.artistService.updateArtist(
+            artistId,
+            artistPutDTO
+        ),
+        HttpStatus.OK
+    );
   }
 
   @DeleteMapping(path = "{artistId}")
   public ResponseEntity<Void> deleteArtist(@PathVariable("artistId") Long artistId) {
-    try {
-      this.artistService.deleteArtist(artistId);
-      return new ResponseEntity<>(HttpStatus.OK);
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+    this.artistService.deleteArtist(artistId);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

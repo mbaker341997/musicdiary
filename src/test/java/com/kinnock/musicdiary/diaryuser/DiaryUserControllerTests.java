@@ -113,6 +113,7 @@ public class DiaryUserControllerTests extends BaseControllerTest {
     );
   }
 
+  // TODO: validate error response body
   @Test
   public void testDiaryUser_AlreadyTaken() throws Exception {
     // create a user
@@ -208,7 +209,7 @@ public class DiaryUserControllerTests extends BaseControllerTest {
     );
     this.runTest(
         new EndpointTest.Builder(
-            put(ENDPOINT + "/9999"), status().isBadRequest()
+            put(ENDPOINT + "/9999"), status().isNotFound()
         ).setRequestBody(putDTO).build()
     );
   }
@@ -218,7 +219,7 @@ public class DiaryUserControllerTests extends BaseControllerTest {
     this.runTest(
         new EndpointTest.Builder(
             delete(ENDPOINT + "/9999"),
-            status().isBadRequest()
+            status().isNotFound()
         ).build()
     );
   }

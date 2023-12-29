@@ -271,4 +271,6 @@ public class DiaryListControllerTests extends BaseControllerTest {
         ).build()
     );
   }
+
+  // TODO: unhappy case tests
 }

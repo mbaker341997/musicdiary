@@ -28,29 +28,20 @@ public class DiaryEntryController {
 
   @PostMapping
   public ResponseEntity<DiaryEntryDTO> createDiaryEntry(
-      @RequestBody DiaryEntryPostDTO diaryEntryPostDTO) {
-    try {
-      return new ResponseEntity<>(
-          this.diaryEntryService.createDiaryEntry(diaryEntryPostDTO),
-          HttpStatus.OK
-      );
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+      @RequestBody DiaryEntryPostDTO diaryEntryPostDTO
+  ) {
+    return new ResponseEntity<>(
+        this.diaryEntryService.createDiaryEntry(diaryEntryPostDTO),
+        HttpStatus.OK
+    );
   }
 
   @GetMapping(path = "{diaryEntryId}")
   public ResponseEntity<DiaryEntryDTO> getAlbum(@PathVariable("diaryEntryId") Long diaryEntryId) {
-    try {
-      return new ResponseEntity<>(
-          this.diaryEntryService.getDiaryEntryById(diaryEntryId),
-          HttpStatus.OK
-      );
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    return new ResponseEntity<>(
+        this.diaryEntryService.getDiaryEntryById(diaryEntryId),
+        HttpStatus.OK
+    );
   }
 
   @GetMapping
@@ -63,7 +54,6 @@ public class DiaryEntryController {
       @PathVariable("diaryEntryId") Long diaryEntryId,
       @RequestBody DiaryEntryPutDTO diaryEntryPutDTO
   ) {
-    // TODO: call the update method
     return new ResponseEntity<>(
         this.diaryEntryService.updateDiaryEntry(diaryEntryId, diaryEntryPutDTO),
         HttpStatus.OK
@@ -72,12 +62,7 @@ public class DiaryEntryController {
 
   @DeleteMapping(path = "{diaryEntryId}")
   public ResponseEntity<Void> deleteAlbum(@PathVariable("diaryEntryId") Long diaryEntryId) {
-    try {
-      this.diaryEntryService.deleteDiaryEntry(diaryEntryId);
-      return new ResponseEntity<>(HttpStatus.OK);
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+    this.diaryEntryService.deleteDiaryEntry(diaryEntryId);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

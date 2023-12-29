@@ -38,8 +38,6 @@ public class ArtistControllerTests extends BaseControllerTest {
   @Autowired
   private ArtistRepository artistRepository;
 
-
-  // TODO: exception case tests
   @Test
   public void testArtist_HappyPath() throws Exception {
     // POST
@@ -108,4 +106,6 @@ public class ArtistControllerTests extends BaseControllerTest {
         ).build()
     );
   }
+
+  // TODO: sad case tests
 }

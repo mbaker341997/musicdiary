@@ -38,16 +38,12 @@ public class SetListItemController {
 
   @GetMapping(path = "{setListItemId}")
   public ResponseEntity<SetListItemDTO> getSetListItem(
-      @PathVariable("setListItemId") Long setListItemId) {
-    try {
-      return new ResponseEntity<>(
-          this.setListItemService.getSetListItemById(setListItemId),
-          HttpStatus.OK
-      );
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+      @PathVariable("setListItemId") Long setListItemId
+  ) {
+    return new ResponseEntity<>(
+        this.setListItemService.getSetListItemById(setListItemId),
+        HttpStatus.OK
+    );
   }
 
   @GetMapping
@@ -72,5 +68,4 @@ public class SetListItemController {
     this.setListItemService.deleteSetListItem(setListItemId);
     return new ResponseEntity<>(HttpStatus.OK);
   }
-
 }

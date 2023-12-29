@@ -29,28 +29,18 @@ public class DiaryUserController {
 
   @PostMapping
   public ResponseEntity<DiaryUserDTO> createDiaryUser(@RequestBody DiaryUserPostDTO diaryUserPostDTO) {
-    try {
-      return new ResponseEntity<>(
-          this.diaryUserService.createDiaryUser(diaryUserPostDTO),
-          HttpStatus.OK
-      );
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+    return new ResponseEntity<>(
+        this.diaryUserService.createDiaryUser(diaryUserPostDTO),
+        HttpStatus.OK
+    );
   }
 
   @GetMapping(path = "{userId}")
   public ResponseEntity<DiaryUserDTO> getUser(@PathVariable("userId") Long userId) {
-    try {
-      return new ResponseEntity<>(
-          this.diaryUserService.getDiaryUserById(userId),
-          HttpStatus.OK
-      );
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+    return new ResponseEntity<>(
+        this.diaryUserService.getDiaryUserById(userId),
+        HttpStatus.OK
+    );
   }
 
   @GetMapping
@@ -63,28 +53,18 @@ public class DiaryUserController {
       @PathVariable("userId") Long userId,
       @RequestBody DiaryUserPutDTO diaryUserPutDTO
   ) {
-    try {
-      return new ResponseEntity<>(
-          this.diaryUserService.updateDiaryUser(
-              userId,
-              diaryUserPutDTO
-          ),
-          HttpStatus.OK
-      );
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+    return new ResponseEntity<>(
+        this.diaryUserService.updateDiaryUser(
+            userId,
+            diaryUserPutDTO
+        ),
+        HttpStatus.OK
+    );
   }
 
   @DeleteMapping(path = "{userId}")
   public ResponseEntity<Void> deleteDiaryUser(@PathVariable("userId") Long userId) {
-    try {
-      this.diaryUserService.deleteDiaryUser(userId);
-      return new ResponseEntity<>(HttpStatus.OK);
-    } catch (IllegalStateException e) {
-      // TODO: refactor once there's a good Exception system in place
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+    this.diaryUserService.deleteDiaryUser(userId);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

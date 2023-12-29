@@ -4,6 +4,7 @@ import com.kinnock.musicdiary.artist.dto.ArtistDTO;
 import com.kinnock.musicdiary.artist.dto.ArtistPostDTO;
 import com.kinnock.musicdiary.artist.dto.ArtistPutDTO;
 import com.kinnock.musicdiary.artist.entity.Artist;
+import com.kinnock.musicdiary.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.utils.EntityUtils;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,11 @@ public class ArtistService {
 
   public ArtistDTO createArtist(ArtistPostDTO postDTO) {
     Artist artist = new Artist(
-            postDTO.getName(),
-            postDTO.getDateOfBirth(),
-            postDTO.getPictureUrl(),
-            postDTO.getBio()
-        );
+        postDTO.getName(),
+        postDTO.getDateOfBirth(),
+        postDTO.getPictureUrl(),
+        postDTO.getBio()
+    );
     return new ArtistDTO(this.artistRepository.save(artist));
   }
 
@@ -33,7 +34,7 @@ public class ArtistService {
   public ArtistDTO getArtistById(Long id) {
     Artist artist = this.artistRepository
         .findById(id)
-        .orElseThrow(() -> new IllegalStateException("artist not found")); // TODO: some 404
+        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("artist"));
     return new ArtistDTO(artist);
   }
 
@@ -44,7 +45,7 @@ public class ArtistService {
   public ArtistDTO updateArtist(Long id, ArtistPutDTO putDTO) {
     Artist artist = this.artistRepository
         .findById(id)
-        .orElseThrow(() -> new IllegalStateException("artist not found")); // TODO: 404
+        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("artist"));
 
     EntityUtils.updateNonBlankStringValue(putDTO::getName, artist::setName);
 
@@ -60,7 +61,7 @@ public class ArtistService {
   public void deleteArtist(Long id) {
     Artist artist = this.artistRepository
         .findById(id)
-        .orElseThrow(() -> new IllegalStateException("artist not found")); // TODO: 404
+        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("artist"));
 
     this.artistRepository.delete(artist);
   }

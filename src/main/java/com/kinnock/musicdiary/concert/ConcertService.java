@@ -8,6 +8,8 @@ import com.kinnock.musicdiary.concert.dto.ConcertPutDTO;
 import com.kinnock.musicdiary.concert.entity.Concert;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
+import com.kinnock.musicdiary.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.setlistitem.SetListItemRepository;
 import com.kinnock.musicdiary.utils.EntityUtils;
 import jakarta.transaction.Transactional;
@@ -41,8 +43,20 @@ public class ConcertService {
 
   public ConcertDTO createConcert(ConcertPostDTO concertPostDTO) {
     List<Artist> artists = this.artistRepository.findAllById(concertPostDTO.getArtistIds());
+    if (artists.size() != concertPostDTO.getArtistIds().size()) {
+      Set<Long> foundArtistIds = artists.stream()
+          .map(Artist::getId)
+          .collect(Collectors.toUnmodifiableSet());
+      List<Long> missingArtistIds = concertPostDTO.getArtistIds()
+          .stream()
+          .filter(id -> !foundArtistIds.contains(id))
+          .toList();
+      throw ResourceDoesNotExistException.from("artist", missingArtistIds);
+    }
+
     DiaryUser diaryUser = this.diaryUserRepository.findById(concertPostDTO.getSubmittedById())
-        .orElseThrow(); // TODO: bad request
+        .orElseThrow(() -> ResourceDoesNotExistException.from(
+            "diaryUser", concertPostDTO.getSubmittedById()));
     Concert concert = new Concert(
         diaryUser,
         artists.stream().collect(Collectors.toUnmodifiableSet()),
@@ -57,7 +71,7 @@ public class ConcertService {
   public ConcertDTO getConcertById(Long id) {
     Concert concert = this.concertRepository
         .findById(id)
-        .orElseThrow(() -> new IllegalStateException("concert not found")); // TODO: 404
+        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("concert"));
     return new ConcertDTO(concert);
   }
 
@@ -68,7 +82,7 @@ public class ConcertService {
   public ConcertDTO updateConcert(Long id, ConcertPutDTO concertPutDTO) {
     Concert concert = this.concertRepository
         .findById(id)
-        .orElseThrow(() -> new IllegalStateException("concert not found"));
+        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("concert"));
 
     EntityUtils.updateEntityValue(
         () -> {
@@ -77,14 +91,14 @@ public class ConcertService {
             Set<Long> existingArtistIds = artistsToUpdate
                 .stream()
                 .map(Artist::getId)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toUnmodifiableSet());
 
             List<Long> missingArtistIds = concertPutDTO.getArtistIds()
                 .stream()
                 .filter(artistId -> !existingArtistIds.contains(artistId))
                 .toList();
-            // throw some 400
-            throw new IllegalStateException("invalid artist ids: " + missingArtistIds);
+
+            throw ResourceDoesNotExistException.from("artist", missingArtistIds);
           }
           // using unmodifiable implementation results in an unsupported operation when saving
           return new HashSet<>(artistsToUpdate);
@@ -108,7 +122,7 @@ public class ConcertService {
   public void deleteConcert(Long id) {
     Concert concert = this.concertRepository
         .findById(id)
-        .orElseThrow(() -> new IllegalStateException("concert not found"));
+        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("concert"));
     concert.getSetListItems().forEach(this.setListItemRepository::delete);
     this.concertRepository.delete(concert);
   }

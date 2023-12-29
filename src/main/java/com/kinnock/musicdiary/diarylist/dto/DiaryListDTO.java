@@ -11,7 +11,6 @@ public class DiaryListDTO {
   private final Long diaryUserId;
   private final String title;
   private final String description;
-  // TODO: add entries
   private final List<DiaryListEntryDTO> diaryListEntries;
 
   @JsonCreator
