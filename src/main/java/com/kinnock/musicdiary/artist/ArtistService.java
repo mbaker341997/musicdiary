@@ -4,7 +4,7 @@ import com.kinnock.musicdiary.artist.dto.ArtistDTO;
 import com.kinnock.musicdiary.artist.dto.ArtistPostDTO;
 import com.kinnock.musicdiary.artist.dto.ArtistPutDTO;
 import com.kinnock.musicdiary.artist.entity.Artist;
-import com.kinnock.musicdiary.exception.ResourceNotFoundException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.utils.EntityUtils;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class ArtistService {
   public ArtistDTO getArtistById(Long id) {
     Artist artist = this.artistRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("artist"));
+        .orElseThrow(() -> new ResourceNotFoundException("artist"));
     return new ArtistDTO(artist);
   }
 
@@ -45,7 +45,7 @@ public class ArtistService {
   public ArtistDTO updateArtist(Long id, ArtistPutDTO putDTO) {
     Artist artist = this.artistRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("artist"));
+        .orElseThrow(() -> new ResourceNotFoundException("artist"));
 
     EntityUtils.updateNonBlankStringValue(putDTO::getName, artist::setName);
 
@@ -61,7 +61,7 @@ public class ArtistService {
   public void deleteArtist(Long id) {
     Artist artist = this.artistRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("artist"));
+        .orElseThrow(() -> new ResourceNotFoundException("artist"));
 
     this.artistRepository.delete(artist);
   }

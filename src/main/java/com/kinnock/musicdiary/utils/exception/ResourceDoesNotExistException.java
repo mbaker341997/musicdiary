@@ -1,4 +1,4 @@
-package com.kinnock.musicdiary.exception;
+package com.kinnock.musicdiary.utils.exception;
 
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -14,17 +14,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
 public class ResourceDoesNotExistException extends RuntimeException {
-
-  public ResourceDoesNotExistException(String message) {
-    super(message);
+  public ResourceDoesNotExistException(String resourceName, Long id) {
+    super(resourceName + " does not exist with id: " + id);
   }
 
-  public static ResourceDoesNotExistException from(String resourceName, Long id) {
-    return new ResourceDoesNotExistException(resourceName + " does not exist with id: " + id);
-  }
-
-  public static ResourceDoesNotExistException from(String resourceName, List<Long> ids) {
-    return new ResourceDoesNotExistException(resourceName + " does not exist for these ids: " +
-        String.join(",", ids.stream().map(String::valueOf).toList()));
+  public ResourceDoesNotExistException(String resourceName, List<Long> ids) {
+    super(resourceName + " does not exist for these ids: " +
+            String.join(",", ids.stream().map(String::valueOf).toList()));
   }
 }

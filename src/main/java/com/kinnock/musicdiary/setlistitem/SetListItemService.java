@@ -2,8 +2,8 @@ package com.kinnock.musicdiary.setlistitem;
 
 import com.kinnock.musicdiary.concert.ConcertRepository;
 import com.kinnock.musicdiary.concert.entity.Concert;
-import com.kinnock.musicdiary.exception.ResourceDoesNotExistException;
-import com.kinnock.musicdiary.exception.ResourceNotFoundException;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.setlistitem.dto.SetListItemDTO;
 import com.kinnock.musicdiary.setlistitem.dto.SetListItemPostDTO;
 import com.kinnock.musicdiary.setlistitem.dto.SetListItemPutDTO;
@@ -36,11 +36,11 @@ public class SetListItemService {
   public SetListItemDTO createSetListItem(SetListItemPostDTO setListItemPostDTO) {
     Concert concert = this.concertRepository
         .findById(setListItemPostDTO.getConcertId())
-        .orElseThrow(() -> ResourceDoesNotExistException.from(
+        .orElseThrow(() -> new ResourceDoesNotExistException(
             "concert", setListItemPostDTO.getConcertId()));
     Optional<Song> song = Optional.ofNullable(setListItemPostDTO.getSongId())
         .map(id -> this.songRepository.findById(setListItemPostDTO.getSongId())
-            .orElseThrow(() -> ResourceDoesNotExistException.from("song", id)));
+            .orElseThrow(() -> new ResourceDoesNotExistException("song", id)));
     SetListItem setListItem = new SetListItem(
         concert,
         song.orElse(null),
@@ -54,7 +54,7 @@ public class SetListItemService {
   public SetListItemDTO getSetListItemById(Long id) {
     SetListItem setListItem = this.setListItemRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("setListItem"));
+        .orElseThrow(() -> new ResourceNotFoundException("setListItem"));
     return new SetListItemDTO(setListItem);
   }
 
@@ -65,13 +65,13 @@ public class SetListItemService {
   public SetListItemDTO updateSetListItem(Long id, SetListItemPutDTO putDTO) {
     SetListItem setListItem = this.setListItemRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("setListItem"));
+        .orElseThrow(() -> new ResourceNotFoundException("setListItem"));
 
     // concert
     EntityUtils.updateNonNullEntityValue(
         () -> this.concertRepository
             .findById(putDTO.getConcertId())
-            .orElseThrow(() -> ResourceDoesNotExistException.from(
+            .orElseThrow(() -> new ResourceDoesNotExistException(
                 "concert", putDTO.getConcertId())),
         setListItem::setConcert
     );
@@ -80,7 +80,7 @@ public class SetListItemService {
     EntityUtils.updateNonNullEntityValue(
         () -> this.songRepository
             .findById(putDTO.getSongId())
-            .orElseThrow(() -> ResourceDoesNotExistException.from(
+            .orElseThrow(() -> new ResourceDoesNotExistException(
                 "song", putDTO.getSongId())),
         setListItem::setSong
     );
@@ -101,7 +101,7 @@ public class SetListItemService {
   public void deleteSetListItem(Long id) {
     SetListItem setListItem = this.setListItemRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("setListItem"));
+        .orElseThrow(() -> new ResourceNotFoundException("setListItem"));
     this.setListItemRepository.delete(setListItem);
   }
 }

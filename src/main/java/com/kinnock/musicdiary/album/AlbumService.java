@@ -8,8 +8,8 @@ import com.kinnock.musicdiary.artist.ArtistRepository;
 import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.exception.ResourceDoesNotExistException;
-import com.kinnock.musicdiary.exception.ResourceNotFoundException;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.utils.EntityUtils;
 import java.util.HashSet;
 import java.util.List;
@@ -46,11 +46,11 @@ public class AlbumService {
           .stream()
           .filter(id -> !foundArtistIds.contains(id))
           .toList();
-      throw ResourceDoesNotExistException.from("artist", missingArtistIds);
+      throw new ResourceDoesNotExistException("artist", missingArtistIds);
     }
 
     DiaryUser diaryUser = this.diaryUserRepository.findById(albumPostDTO.getSubmittedById())
-        .orElseThrow(() -> ResourceDoesNotExistException.from(
+        .orElseThrow(() -> new ResourceDoesNotExistException(
             "diaryUser", albumPostDTO.getSubmittedById()));
     Album album = new Album(
         diaryUser,
@@ -66,7 +66,7 @@ public class AlbumService {
   public AlbumDTO getAlbumById(Long id) {
     Album album = this.albumRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("album"));
+        .orElseThrow(() -> new ResourceNotFoundException("album"));
     return new AlbumDTO(album);
   }
 
@@ -77,7 +77,7 @@ public class AlbumService {
   public AlbumDTO updateAlbum(Long id, AlbumPutDTO albumPutDTO) {
     Album album = this.albumRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("album"));
+        .orElseThrow(() -> new ResourceNotFoundException("album"));
 
     EntityUtils.updateEntityValue(
         () -> {
@@ -93,7 +93,7 @@ public class AlbumService {
                 .filter(artistId -> !existingArtistIds.contains(artistId))
                 .toList();
 
-            throw ResourceDoesNotExistException.from("artist", missingArtistIds);
+            throw new ResourceDoesNotExistException("artist", missingArtistIds);
           }
           // using unmodifiable implementation results in an unsupported operation when saving
           return new HashSet<>(artistsToUpdate);
@@ -118,7 +118,7 @@ public class AlbumService {
   public void deleteAlbum(Long id) {
     Album album = this.albumRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("album"));
+        .orElseThrow(() -> new ResourceNotFoundException("album"));
 
     this.albumRepository.delete(album);
   }

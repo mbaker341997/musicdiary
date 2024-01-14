@@ -6,8 +6,8 @@ import com.kinnock.musicdiary.artist.ArtistRepository;
 import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.exception.ResourceDoesNotExistException;
-import com.kinnock.musicdiary.exception.ResourceNotFoundException;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.song.dto.SongDTO;
 import com.kinnock.musicdiary.song.dto.SongPostDTO;
 import com.kinnock.musicdiary.song.dto.SongPutDTO;
@@ -53,14 +53,14 @@ public class SongService {
           .stream()
           .filter(id -> !foundArtistIds.contains(id))
           .toList();
-      throw ResourceDoesNotExistException.from("artist", missingArtistIds);
+      throw new ResourceDoesNotExistException("artist", missingArtistIds);
     }
     DiaryUser diaryUser = this.diaryUserRepository.findById(songPostDTO.getSubmittedById())
-        .orElseThrow(() -> ResourceDoesNotExistException.from(
+        .orElseThrow(() -> new ResourceDoesNotExistException(
             "diaryUser", songPostDTO.getSubmittedById()));
     Optional<Album> optionalAlbum = Optional.ofNullable(songPostDTO.getAlbumId())
         .map(albumId -> this.albumRepository.findById(albumId)
-            .orElseThrow(() -> ResourceDoesNotExistException.from("album", albumId)));
+            .orElseThrow(() -> new ResourceDoesNotExistException("album", albumId)));
     Song song = new Song(
         diaryUser,
         artists.stream().collect(Collectors.toUnmodifiableSet()),
@@ -77,7 +77,7 @@ public class SongService {
   public SongDTO getSongById(Long id) {
     Song song = this.songRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("song"));
+        .orElseThrow(() -> new ResourceNotFoundException("song"));
     return new SongDTO(song);
   }
 
@@ -90,7 +90,7 @@ public class SongService {
   public SongDTO updateSong(Long id, SongPutDTO songPutDTO) {
     Song song = this.songRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("song"));
+        .orElseThrow(() -> new ResourceNotFoundException("song"));
 
     // artists
     EntityUtils.updateEntityValue(
@@ -107,7 +107,7 @@ public class SongService {
                 .filter(artistId -> !existingArtistIds.contains(artistId))
                 .toList();
             // throw some 400
-            throw ResourceDoesNotExistException.from("artist", missingArtistIds);
+            throw new ResourceDoesNotExistException("artist", missingArtistIds);
           }
           // using unmodifiable implementation results in an unsupported operation when saving
           return new HashSet<>(artistsToUpdate);
@@ -121,7 +121,7 @@ public class SongService {
     // album
     EntityUtils.updateNonNullEntityValue(
         () -> this.albumRepository.findById(songPutDTO.getAlbumId())
-              .orElseThrow(() -> ResourceDoesNotExistException.from(
+              .orElseThrow(() -> new ResourceDoesNotExistException(
                   "album", songPutDTO.getAlbumId())),
         song::setAlbum
     );
@@ -144,7 +144,7 @@ public class SongService {
   public void deleteSong(Long id) {
     Song song = this.songRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("song"));
+        .orElseThrow(() -> new ResourceNotFoundException("song"));
 
     this.songRepository.delete(song);
   }

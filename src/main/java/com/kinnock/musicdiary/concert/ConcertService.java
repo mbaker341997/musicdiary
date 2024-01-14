@@ -8,8 +8,8 @@ import com.kinnock.musicdiary.concert.dto.ConcertPutDTO;
 import com.kinnock.musicdiary.concert.entity.Concert;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.exception.ResourceDoesNotExistException;
-import com.kinnock.musicdiary.exception.ResourceNotFoundException;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.setlistitem.SetListItemRepository;
 import com.kinnock.musicdiary.utils.EntityUtils;
 import jakarta.transaction.Transactional;
@@ -51,11 +51,11 @@ public class ConcertService {
           .stream()
           .filter(id -> !foundArtistIds.contains(id))
           .toList();
-      throw ResourceDoesNotExistException.from("artist", missingArtistIds);
+      throw new ResourceDoesNotExistException("artist", missingArtistIds);
     }
 
     DiaryUser diaryUser = this.diaryUserRepository.findById(concertPostDTO.getSubmittedById())
-        .orElseThrow(() -> ResourceDoesNotExistException.from(
+        .orElseThrow(() -> new ResourceDoesNotExistException(
             "diaryUser", concertPostDTO.getSubmittedById()));
     Concert concert = new Concert(
         diaryUser,
@@ -71,7 +71,7 @@ public class ConcertService {
   public ConcertDTO getConcertById(Long id) {
     Concert concert = this.concertRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("concert"));
+        .orElseThrow(() -> new ResourceNotFoundException("concert"));
     return new ConcertDTO(concert);
   }
 
@@ -82,7 +82,7 @@ public class ConcertService {
   public ConcertDTO updateConcert(Long id, ConcertPutDTO concertPutDTO) {
     Concert concert = this.concertRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("concert"));
+        .orElseThrow(() -> new ResourceNotFoundException("concert"));
 
     EntityUtils.updateEntityValue(
         () -> {
@@ -98,7 +98,7 @@ public class ConcertService {
                 .filter(artistId -> !existingArtistIds.contains(artistId))
                 .toList();
 
-            throw ResourceDoesNotExistException.from("artist", missingArtistIds);
+            throw new ResourceDoesNotExistException("artist", missingArtistIds);
           }
           // using unmodifiable implementation results in an unsupported operation when saving
           return new HashSet<>(artistsToUpdate);
@@ -122,7 +122,7 @@ public class ConcertService {
   public void deleteConcert(Long id) {
     Concert concert = this.concertRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("concert"));
+        .orElseThrow(() -> new ResourceNotFoundException("concert"));
     concert.getSetListItems().forEach(this.setListItemRepository::delete);
     this.concertRepository.delete(concert);
   }

@@ -4,8 +4,7 @@ import com.kinnock.musicdiary.diaryuser.dto.DiaryUserDTO;
 import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPostDTO;
 import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPutDTO;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.exception.BadUserDataException;
-import com.kinnock.musicdiary.exception.ResourceNotFoundException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.utils.EntityUtils;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,7 @@ public class DiaryUserService {
   public DiaryUserDTO getDiaryUserById(Long userId) {
     DiaryUser user = this.diaryUserRepository
         .findById(userId)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryUser"));
+        .orElseThrow(() -> new ResourceNotFoundException("diaryUser"));
     return new DiaryUserDTO(user);
   }
 
@@ -60,7 +59,7 @@ public class DiaryUserService {
   public void deleteDiaryUser(Long userId) {
     DiaryUser user = diaryUserRepository
         .findById(userId)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryUser"));
+        .orElseThrow(() -> new ResourceNotFoundException("diaryUser"));
 
     this.diaryUserRepository.delete(user);
   }
@@ -70,7 +69,7 @@ public class DiaryUserService {
       DiaryUserPutDTO diaryUserPutDTO
   ) {
     DiaryUser user = this.diaryUserRepository.findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryUser"));
+        .orElseThrow(() -> new ResourceNotFoundException("diaryUser"));
 
     // TODO: enhanced username format validation
     EntityUtils.updateNonBlankStringValue(

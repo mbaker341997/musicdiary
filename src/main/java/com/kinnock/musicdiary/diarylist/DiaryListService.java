@@ -10,8 +10,8 @@ import com.kinnock.musicdiary.diarylist.entity.DiaryList;
 import com.kinnock.musicdiary.diarylist.entity.DiaryListEntry;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.exception.ResourceDoesNotExistException;
-import com.kinnock.musicdiary.exception.ResourceNotFoundException;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.loggable.LoggableRepository;
 import com.kinnock.musicdiary.loggable.entity.Loggable;
 import com.kinnock.musicdiary.utils.EntityUtils;
@@ -41,7 +41,7 @@ public class DiaryListService {
 
   public DiaryListDTO createDiaryList(DiaryListPostDTO diaryListPostDTO) {
     DiaryUser diaryUser = this.diaryUserRepository.findById(diaryListPostDTO.getDiaryUserId())
-        .orElseThrow(() -> ResourceDoesNotExistException.from(
+        .orElseThrow(() -> new ResourceDoesNotExistException(
             "diaryUser", diaryListPostDTO.getDiaryUserId()));
     DiaryList diaryList = new DiaryList(
         diaryUser,
@@ -55,7 +55,7 @@ public class DiaryListService {
   public DiaryListDTO getDiaryListById(Long id) {
     DiaryList diaryList = this.diaryListRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryList"));
+        .orElseThrow(() -> new ResourceNotFoundException("diaryList"));
     return new DiaryListDTO(diaryList);
   }
 
@@ -70,7 +70,7 @@ public class DiaryListService {
   public DiaryListDTO updateDiaryList(Long id, DiaryListPutDTO putDTO) {
     DiaryList diaryList = this.diaryListRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryList"));
+        .orElseThrow(() -> new ResourceNotFoundException("diaryList"));
 
     EntityUtils.updateNonBlankStringValue(putDTO::getTitle, diaryList::setTitle);
     EntityUtils.updateNonBlankStringValue(putDTO::getDescription, diaryList::setDescription);
@@ -81,7 +81,7 @@ public class DiaryListService {
   public void deleteDiaryList(Long id) {
     DiaryList diaryList = this.diaryListRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryList"));
+        .orElseThrow(() -> new ResourceNotFoundException("diaryList"));
 
     this.diaryListRepository.delete(diaryList);
   }
@@ -89,10 +89,10 @@ public class DiaryListService {
   // List Entry
   public DiaryListEntryDTO createDiaryListEntry(DiaryListEntryPostDTO diaryListEntryPostDTO) {
     DiaryList diaryList = this.diaryListRepository.findById(diaryListEntryPostDTO.getDiaryListId())
-        .orElseThrow(() -> ResourceDoesNotExistException.from(
+        .orElseThrow(() -> new ResourceDoesNotExistException(
             "diaryList", diaryListEntryPostDTO.getDiaryListId()));
     Loggable loggable = this.loggableRepository.findById(diaryListEntryPostDTO.getLoggableId())
-        .orElseThrow(() -> ResourceDoesNotExistException.from(
+        .orElseThrow(() -> new ResourceDoesNotExistException(
             "loggable", diaryListEntryPostDTO.getLoggableId()));
     DiaryListEntry diaryListEntry = new DiaryListEntry(
         diaryList,
@@ -106,7 +106,7 @@ public class DiaryListService {
   public DiaryListEntryDTO getDiaryListEntryById(Long id) {
     DiaryListEntry diaryListEntry = this.diaryListEntryRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryListEntry"));
+        .orElseThrow(() -> new ResourceNotFoundException("diaryListEntry"));
     return new DiaryListEntryDTO(diaryListEntry);
   }
 
@@ -121,12 +121,12 @@ public class DiaryListService {
   public DiaryListEntryDTO updateDiaryListEntry(Long id, DiaryListEntryPutDTO putDTO) {
     DiaryListEntry diaryListEntry = this.diaryListEntryRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryListEntry"));
+        .orElseThrow(() -> new ResourceNotFoundException("diaryListEntry"));
 
     EntityUtils.updateNonNullEntityValue(
         () -> this.loggableRepository
             .findById(putDTO.getLoggableId())
-            .orElseThrow(() -> ResourceDoesNotExistException.from(
+            .orElseThrow(() -> new ResourceDoesNotExistException(
                 "loggable", putDTO.getLoggableId())),
         diaryListEntry::setLoggable
     );
@@ -143,7 +143,7 @@ public class DiaryListService {
   public void deleteDiaryListEntry(Long id) {
     DiaryListEntry diaryListEntry = this.diaryListEntryRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryListEntry"));
+        .orElseThrow(() -> new ResourceNotFoundException("diaryListEntry"));
 
     this.diaryListEntryRepository.delete(diaryListEntry);
   }

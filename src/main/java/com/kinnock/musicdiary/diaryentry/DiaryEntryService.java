@@ -6,8 +6,8 @@ import com.kinnock.musicdiary.diaryentry.dto.DiaryEntryPutDTO;
 import com.kinnock.musicdiary.diaryentry.entity.DiaryEntry;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.exception.ResourceDoesNotExistException;
-import com.kinnock.musicdiary.exception.ResourceNotFoundException;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.loggable.LoggableRepository;
 import com.kinnock.musicdiary.loggable.entity.Loggable;
 import com.kinnock.musicdiary.utils.EntityUtils;
@@ -34,10 +34,10 @@ public class DiaryEntryService {
 
   public DiaryEntryDTO createDiaryEntry(DiaryEntryPostDTO postDTO) {
     DiaryUser diaryUser = this.diaryUserRepository.findById(postDTO.getUserId())
-        .orElseThrow(() -> ResourceDoesNotExistException.from(
+        .orElseThrow(() -> new ResourceDoesNotExistException(
             "diaryUser", postDTO.getUserId()));
     Loggable loggable = this.loggableRepository.findById(postDTO.getLoggableId())
-        .orElseThrow(() -> ResourceDoesNotExistException.from(
+        .orElseThrow(() -> new ResourceDoesNotExistException(
             "loggable", postDTO.getLoggableId()));
 
     DiaryEntry diaryEntry = new DiaryEntry(
@@ -54,7 +54,7 @@ public class DiaryEntryService {
   public DiaryEntryDTO getDiaryEntryById(Long id) {
     DiaryEntry diaryEntry = this.diaryEntryRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryEntry"));
+        .orElseThrow(() -> new ResourceNotFoundException("diaryEntry"));
     return new DiaryEntryDTO(diaryEntry);
   }
 
@@ -65,7 +65,7 @@ public class DiaryEntryService {
   public DiaryEntryDTO updateDiaryEntry(Long id, DiaryEntryPutDTO putDTO) {
     DiaryEntry diaryEntry = this.diaryEntryRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryEntry"));
+        .orElseThrow(() -> new ResourceNotFoundException("diaryEntry"));
 
     // TODO: no future dating? timezones will be tricky
     EntityUtils.updateNonNullEntityValue(putDTO::getLogDate, diaryEntry::setLogDate);
@@ -80,7 +80,7 @@ public class DiaryEntryService {
   public void deleteDiaryEntry(Long id) {
     DiaryEntry diaryEntry = this.diaryEntryRepository
         .findById(id)
-        .orElseThrow(() -> ResourceNotFoundException.fromResourceName("diaryEntry"));
+        .orElseThrow(() -> new ResourceNotFoundException("diaryEntry"));
     this.diaryEntryRepository.delete(diaryEntry);
   }
 }

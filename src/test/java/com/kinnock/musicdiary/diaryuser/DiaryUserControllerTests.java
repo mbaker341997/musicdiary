@@ -14,6 +14,8 @@ import com.kinnock.musicdiary.testutils.BaseControllerTest;
 import com.kinnock.musicdiary.testutils.EndpointTest;
 import java.time.LocalDate;
 import java.time.Month;
+
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -109,11 +111,10 @@ public class DiaryUserControllerTests extends BaseControllerTest {
         new EndpointTest.Builder(
             get(ENDPOINT + "/" + diaryUserEntity.getId()),
             status().isNotFound()
-        ).build()
+        ).setException(new ResourceNotFoundException("diaryUser")).build()
     );
   }
 
-  // TODO: validate error response body
   @Test
   public void testDiaryUser_AlreadyTaken() throws Exception {
     // create a user
@@ -139,6 +140,7 @@ public class DiaryUserControllerTests extends BaseControllerTest {
     this.runTest(
         new EndpointTest.Builder(post(ENDPOINT), status().isBadRequest())
             .setRequestBody(postDTOUsernameTaken)
+            .setException(new BadUserDataException("username taken"))
             .build()
     );
 
@@ -154,6 +156,7 @@ public class DiaryUserControllerTests extends BaseControllerTest {
     this.runTest(
         new EndpointTest.Builder(post(ENDPOINT), status().isBadRequest())
             .setRequestBody(postDTOEmailTaken)
+            .setException(new BadUserDataException("email taken"))
             .build()
     );
 
@@ -178,8 +181,10 @@ public class DiaryUserControllerTests extends BaseControllerTest {
     );
     this.runTest(
         new EndpointTest.Builder(
-            put(ENDPOINT + "/" + jenkins.getId()), status().isBadRequest()
-        ).setRequestBody(putDTOUsernameTaken).build()
+              put(ENDPOINT + "/" + jenkins.getId()),
+              status().isBadRequest())
+            .setRequestBody(putDTOUsernameTaken)
+            .setException(new BadUserDataException("username taken")).build()
     );
     // try to update to email already taken
     DiaryUserPutDTO putDTOEmailTaken = new DiaryUserPutDTO(
@@ -192,8 +197,10 @@ public class DiaryUserControllerTests extends BaseControllerTest {
     );
     this.runTest(
         new EndpointTest.Builder(
-            put(ENDPOINT + "/" + jenkins.getId()), status().isBadRequest()
-        ).setRequestBody(putDTOEmailTaken).build()
+              put(ENDPOINT + "/" + jenkins.getId()),
+              status().isBadRequest())
+            .setRequestBody(putDTOEmailTaken)
+            .setException(new BadUserDataException("email taken")).build()
     );
   }
 
@@ -208,9 +215,10 @@ public class DiaryUserControllerTests extends BaseControllerTest {
         null
     );
     this.runTest(
-        new EndpointTest.Builder(
-            put(ENDPOINT + "/9999"), status().isNotFound()
-        ).setRequestBody(putDTO).build()
+        new EndpointTest.Builder(put(ENDPOINT + "/9999"), status().isNotFound())
+            .setRequestBody(putDTO)
+            .setException(new ResourceNotFoundException("diaryUser"))
+            .build()
     );
   }
 
@@ -220,7 +228,7 @@ public class DiaryUserControllerTests extends BaseControllerTest {
         new EndpointTest.Builder(
             delete(ENDPOINT + "/9999"),
             status().isNotFound()
-        ).build()
+        ).setException(new ResourceNotFoundException("diaryUser")).build()
     );
   }
 }

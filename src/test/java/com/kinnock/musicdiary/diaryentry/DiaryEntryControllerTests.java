@@ -24,6 +24,9 @@ import com.kinnock.musicdiary.testutils.EndpointTest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -166,9 +169,9 @@ public class DiaryEntryControllerTests extends BaseControllerTest {
         new EndpointTest.Builder(
             get(ENDPOINT + "/" + diaryEntry.getId()),
             status().isNotFound()
-        ).build()
+        ).setException(new ResourceNotFoundException("diaryEntry")).build()
     );
   }
 
-  // TODO: unhappy case tests
+  // Unhappy case test s
 }

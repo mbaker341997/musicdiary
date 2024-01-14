@@ -7,6 +7,7 @@ public class EndpointTest {
   private final MockHttpServletRequestBuilder request;
   private final Object requestBody;
   private final Object responseBody;
+  private final Exception exception;
   private final ResultMatcher resultMatcher;
 
 
@@ -26,17 +27,22 @@ public class EndpointTest {
     return resultMatcher;
   }
 
+  public Exception getException() {
+    return exception;
+  }
+
   private EndpointTest(Builder builder) {
     this.request = builder.request;
     this.requestBody = builder.requestBody;
     this.responseBody = builder.responseBody;
+    this.exception = builder.exception;
     this.resultMatcher = builder.resultMatcher;
   }
 
   public static class Builder {
     private final MockHttpServletRequestBuilder request;
     private final ResultMatcher resultMatcher;
-
+    private Exception exception;
     private Object requestBody;
     private Object responseBody;
 
@@ -53,6 +59,11 @@ public class EndpointTest {
 
     public Builder setResponseBody(Object responseBody) {
       this.responseBody = responseBody;
+      return this;
+    }
+
+    public Builder setException(Exception exception) {
+      this.exception = exception;
       return this;
     }
 
