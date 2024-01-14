@@ -7,9 +7,8 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_USER: musicdiary
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: musicdiary
     ports:
       - 5432:5432
 
@@ -17,9 +16,8 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_USER: musicdiary_test
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: musicdiary_test
     ports:
       - 5433:5432
 
