@@ -6,13 +6,13 @@ import com.kinnock.musicdiary.artist.ArtistRepository;
 import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
-import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.song.dto.SongDTO;
 import com.kinnock.musicdiary.song.dto.SongPostDTO;
 import com.kinnock.musicdiary.song.dto.SongPutDTO;
 import com.kinnock.musicdiary.song.entity.Song;
 import com.kinnock.musicdiary.utils.EntityUtils;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +44,6 @@ public class SongService {
 
   public SongDTO createSong(SongPostDTO songPostDTO) {
     List<Artist> artists = this.artistRepository.findAllById(songPostDTO.getArtistIds());
-    // TODO: DRY and consolidate all problems with the request body?
     if (artists.size() != songPostDTO.getArtistIds().size()) {
       Set<Long> foundArtistIds = artists.stream()
           .map(Artist::getId)
@@ -119,6 +118,7 @@ public class SongService {
     EntityUtils.updateNonBlankStringValue(songPutDTO::getTitle, song::setTitle);
 
     // album
+    // TODO: be able to delete albums off, that'll be part of managing songs and albums together
     EntityUtils.updateNonNullEntityValue(
         () -> this.albumRepository.findById(songPutDTO.getAlbumId())
               .orElseThrow(() -> new ResourceDoesNotExistException(

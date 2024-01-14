@@ -21,6 +21,8 @@ import com.kinnock.musicdiary.song.SongRepository;
 import com.kinnock.musicdiary.song.entity.Song;
 import com.kinnock.musicdiary.testutils.BaseControllerTest;
 import com.kinnock.musicdiary.testutils.EndpointTest;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -66,13 +68,12 @@ public class SetListItemControllerTests extends BaseControllerTest {
           "fake url")
       );
 
-      Artist testArtist = new Artist(
+      Artist testArtist = this.artistRepository.save(new Artist(
           "SetListItemArtist",
           LocalDate.parse("1973-09-14"),
           "fakeurl",
           "fake bio"
-      );
-      this.artistRepository.save(testArtist);
+      ));
 
       concert1 = new Concert(
           testUser,
@@ -190,9 +191,107 @@ public class SetListItemControllerTests extends BaseControllerTest {
         new EndpointTest.Builder(
             get(ENDPOINT + "/" + setListItemDTO.getId()),
             status().isNotFound()
-        ).build()
+        ).setException(new ResourceNotFoundException("setListItem")).build()
     );
   }
 
-  // TODO: sad case tests
+  @Test
+  public void testSetListItem_CreateWithNonExistingEntities() throws Exception {
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT), status().isUnprocessableEntity())
+            .setRequestBody(new SetListItemPostDTO(
+                9999L,
+                null,
+                "song title",
+                12,
+                1
+            ))
+            .setException(new ResourceDoesNotExistException("concert", 9999L))
+            .build()
+    );
+
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT), status().isUnprocessableEntity())
+            .setRequestBody(new SetListItemPostDTO(
+                concert1.getId(),
+                9999L,
+                "song title",
+                12,
+                1
+            ))
+            .setException(new ResourceDoesNotExistException("song", 9999L))
+            .build()
+    );
+  }
+
+  @Test
+  public void testSetListItem_UpdateNonExistingAttributes() throws Exception {
+    // create a song
+    SetListItem setListItem = new SetListItem(
+        concert2,
+        "Update To Non Existent Test",
+        12,
+        0
+    );
+    this.setListItemRepository.save(setListItem);
+
+    // concert doesn't exist
+    SetListItemPutDTO setListItemPutDTO = new SetListItemPutDTO(
+        9999L,
+        song.getId(),
+        "updated set list item title",
+        155,
+        2
+    );
+    this.runTest(
+        new EndpointTest.Builder(put(ENDPOINT + "/" + setListItem.getId()),
+            status().isUnprocessableEntity())
+            .setRequestBody(setListItemPutDTO)
+            .setException(new ResourceDoesNotExistException("concert", 9999L))
+            .build()
+    );
+
+    // song doesn't exist
+    SetListItemPutDTO setListItemPutDTO2 = new SetListItemPutDTO(
+        concert2.getId(),
+        9999L,
+        "updated set list item title",
+        155,
+        2
+    );
+    this.runTest(
+        new EndpointTest.Builder(put(ENDPOINT + "/" + setListItem.getId()),
+            status().isUnprocessableEntity())
+            .setRequestBody(setListItemPutDTO2)
+            .setException(new ResourceDoesNotExistException("song", 9999L))
+            .build()
+    );
+  }
+
+  @Test
+  public void testSetListItem_UpdateNonExisting() throws Exception {
+    SetListItemPutDTO setListItemPutDTO = new SetListItemPutDTO(
+        concert2.getId(),
+        song.getId(),
+        "updated set list item title",
+        155,
+        2
+    );
+    this.runTest(
+        new EndpointTest.Builder(put(ENDPOINT + "/9999"), status().isNotFound())
+            .setRequestBody(setListItemPutDTO)
+            .setException(new ResourceNotFoundException("setListItem"))
+            .build()
+    );
+  }
+
+  @Test
+  public void testSetListItem_DeleteNonExisting() throws Exception {
+    this.runTest(
+        new EndpointTest.Builder(
+            delete(ENDPOINT + "/9999"),
+            status().isNotFound()
+        ).setException(new ResourceNotFoundException("setListItem")).build()
+    );
+  }
 }

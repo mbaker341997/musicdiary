@@ -18,9 +18,12 @@ import com.kinnock.musicdiary.song.dto.SongPutDTO;
 import com.kinnock.musicdiary.song.entity.Song;
 import com.kinnock.musicdiary.testutils.BaseControllerTest;
 import com.kinnock.musicdiary.testutils.EndpointTest;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -95,6 +98,11 @@ public class SongControllerTests extends BaseControllerTest {
           1
       );
     }
+  }
+
+  @AfterEach
+  public void cleanup() {
+    this.songRepository.deleteAll();
   }
 
   @Test
@@ -175,9 +183,133 @@ public class SongControllerTests extends BaseControllerTest {
         new EndpointTest.Builder(
             get(ENDPOINT + "/" + song.getId()),
             status().isNotFound()
-        ).build()
+        ).setException(new ResourceNotFoundException("song")).build()
     );
   }
 
-  // TODO: sad case tests
+  @Test
+  public void testSong_CreateWithNonExistingEntities() throws Exception {
+    // diary user doesn't exist
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT), status().isUnprocessableEntity())
+            .setRequestBody(new SongPostDTO(
+                9999L,
+                List.of(testArtist1.getId()),
+                "song title",
+                testAlbum1.getId(),
+                12,
+                "lyricsUrl",
+                1
+            ))
+            .setException(new ResourceDoesNotExistException("diaryUser", 9999L))
+            .build()
+    );
+
+    // artist doesn't exist
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT), status().isUnprocessableEntity())
+            .setRequestBody(new SongPostDTO(
+                testUser.getId(),
+                List.of(testArtist1.getId(), 700L, 9999L),
+                "song title",
+                testAlbum1.getId(),
+                12,
+                "lyricsUrl",
+                1
+            ))
+            .setException(new ResourceDoesNotExistException("artist", List.of(700L, 9999L)))
+            .build()
+    );
+
+    // album doesn't exist
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT), status().isUnprocessableEntity())
+            .setRequestBody(new SongPostDTO(
+                testUser.getId(),
+                List.of(testArtist1.getId()),
+                "song title",
+                9999L,
+                12,
+                "lyricsUrl",
+                1
+            ))
+            .setException(new ResourceDoesNotExistException("album", 9999L))
+            .build()
+    );
+  }
+
+  @Test
+  public void testSong_UpdateNonExistingAttributes() throws Exception {
+    // create a song
+    Song song = new Song(
+        testUser,
+        Set.of(testArtist1),
+        "Update To Non Existent Test",
+        12,
+        "lyricsUrl"
+    );
+    this.songRepository.save(song);
+
+    // artist doesn't exist
+    SongPutDTO songPutDTO = new SongPutDTO(
+        List.of(testArtist2.getId(), 700L, 9999L),
+        "title2",
+        testAlbum2.getId(),
+        89,
+        "lyricsUrl22",
+        2
+    );
+    this.runTest(
+        new EndpointTest.Builder(put(ENDPOINT + "/" + song.getId()),
+            status().isUnprocessableEntity())
+            .setRequestBody(songPutDTO)
+            .setException(new ResourceDoesNotExistException("artist", List.of(700L, 9999L)))
+            .build()
+    );
+
+    // album doesn't exist
+    SongPutDTO songPutDTO2 = new SongPutDTO(
+        List.of(testArtist2.getId()),
+        "title2",
+        9999L,
+        89,
+        "lyricsUrl22",
+        2
+    );
+    this.runTest(
+        new EndpointTest.Builder(put(ENDPOINT + "/" + song.getId()),
+            status().isUnprocessableEntity())
+            .setRequestBody(songPutDTO2)
+            .setException(new ResourceDoesNotExistException("album", 9999L))
+            .build()
+    );
+  }
+
+  @Test
+  public void testSong_UpdateNonExisting() throws Exception {
+    SongPutDTO songPutDTO = new SongPutDTO(
+        List.of(testArtist2.getId()),
+        "title2",
+        testAlbum2.getId(),
+        89,
+        "lyricsUrl22",
+        2
+    );
+    this.runTest(
+        new EndpointTest.Builder(put(ENDPOINT + "/9999"), status().isNotFound())
+            .setRequestBody(songPutDTO)
+            .setException(new ResourceNotFoundException("song"))
+            .build()
+    );
+  }
+
+  @Test
+  public void testSong_DeleteNonExisting() throws Exception {
+    this.runTest(
+        new EndpointTest.Builder(
+            delete(ENDPOINT + "/9999"),
+            status().isNotFound()
+        ).setException(new ResourceNotFoundException("song")).build()
+    );
+  }
 }

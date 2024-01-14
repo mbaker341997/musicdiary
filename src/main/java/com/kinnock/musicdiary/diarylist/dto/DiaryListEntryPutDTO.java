@@ -7,20 +7,13 @@ import jakarta.validation.constraints.NotNull;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DiaryListEntryPutDTO {
   @NotNull
-  private final Long loggableId;
-  @NotNull
   private final Integer listIndex;
   private final String note;
 
   @JsonCreator
-  public DiaryListEntryPutDTO(Long loggableId, Integer listIndex, String note) {
-    this.loggableId = loggableId;
+  public DiaryListEntryPutDTO(Integer listIndex, String note) {
     this.listIndex = listIndex;
     this.note = note;
-  }
-
-  public Long getLoggableId() {
-    return loggableId;
   }
 
   public Integer getListIndex() {

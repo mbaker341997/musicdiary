@@ -19,8 +19,11 @@ import com.kinnock.musicdiary.setlistitem.dto.SetListItemDTO;
 import com.kinnock.musicdiary.setlistitem.entity.SetListItem;
 import com.kinnock.musicdiary.testutils.BaseControllerTest;
 import com.kinnock.musicdiary.testutils.EndpointTest;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -185,9 +188,93 @@ public class ConcertControllerTests extends BaseControllerTest {
         new EndpointTest.Builder(
             get(ENDPOINT + "/" + concertDTO.getId()),
             status().isNotFound()
-        ).build()
+        ).setException(new ResourceNotFoundException("concert")).build()
     );
   }
 
-  // TODO: you can add non-happy bath ones later when you've consolidated a CRUD framework
+  @Test
+  public void testConcert_UpdateNonExisting() throws Exception {
+    ConcertPutDTO concertPutDTO = new ConcertPutDTO(
+        List.of(testArtist2.getId()),
+        "title2",
+        LocalDate.parse("2023-11-22"),
+        "venue"
+    );
+    this.runTest(
+        new EndpointTest.Builder(put(ENDPOINT + "/9999"), status().isNotFound())
+            .setRequestBody(concertPutDTO)
+            .setException(new ResourceNotFoundException("concert"))
+            .build()
+    );
+  }
+
+  @Test
+  public void testConcert_DeleteNonExisting() throws Exception {
+    this.runTest(
+        new EndpointTest.Builder(
+            delete(ENDPOINT + "/9999"),
+            status().isNotFound()
+        ).setException(new ResourceNotFoundException("concert")).build()
+    );
+  }
+
+  @Test
+  public void testConcert_UpdateToNonExistentArtist() throws Exception {
+    // create a concert
+    Concert concert = new Concert(
+        testUser,
+        Set.of(testArtist1),
+        "Update To Non Existent Test",
+        testPostDtoBase.getDate(),
+        testPostDtoBase.getVenue(),
+        List.of()
+    );
+    this.concertRepository.save(concert);
+
+    ConcertPutDTO concertPutDTO = new ConcertPutDTO(
+        List.of(testArtist2.getId(), 700L, 9999L), // artist doesn't exist
+        "title2",
+        LocalDate.parse("2023-11-22"),
+        "venue"
+    );
+    this.runTest(
+        new EndpointTest.Builder(
+            put(ENDPOINT + "/" + concert.getId()),
+            status().isUnprocessableEntity())
+            .setRequestBody(concertPutDTO)
+            .setException(new ResourceDoesNotExistException("artist", List.of(700L, 9999L)))
+            .build()
+    );
+  }
+
+  @Test
+  public void testConcert_CreateWithNonExistingEntities() throws Exception {
+    // diary user doesn't exist
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT), status().isUnprocessableEntity())
+            .setRequestBody(new ConcertPostDTO(
+                9999L,
+                List.of(testArtist1.getId()),
+                "test concert title",
+                LocalDate.parse("2023-11-12"),
+                "Alamodome"
+            ))
+            .setException(new ResourceDoesNotExistException("diaryUser", 9999L))
+            .build()
+    );
+
+    // artist doesn't exist
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT), status().isUnprocessableEntity())
+            .setRequestBody(new ConcertPostDTO(
+                testUser.getId(),
+                List.of(testArtist1.getId(), 700L, 9999L),
+                "test concert title",
+                LocalDate.parse("2023-11-12"),
+                "Alamodome"
+            ))
+            .setException(new ResourceDoesNotExistException("artist", List.of(700L, 9999L)))
+            .build()
+    );
+  }
 }

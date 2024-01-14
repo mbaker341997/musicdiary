@@ -18,7 +18,6 @@ import java.time.LocalDate;
 @Entity
 @Table
 public class DiaryEntry {
-  // TODO: composite key?
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

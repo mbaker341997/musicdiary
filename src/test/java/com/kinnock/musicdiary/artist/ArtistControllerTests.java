@@ -12,6 +12,7 @@ import com.kinnock.musicdiary.artist.dto.ArtistPutDTO;
 import com.kinnock.musicdiary.artist.entity.Artist;
 import com.kinnock.musicdiary.testutils.BaseControllerTest;
 import com.kinnock.musicdiary.testutils.EndpointTest;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import java.time.LocalDate;
 import java.time.Month;
 import org.junit.jupiter.api.Tag;
@@ -100,12 +101,37 @@ public class ArtistControllerTests extends BaseControllerTest {
 
     // GET the deleted and no result
     this.runTest(
-        new EndpointTest.Builder(
-            get(ENDPOINT + "/" + artistEntity.getId()),
-            status().isNotFound()
-        ).build()
+        new EndpointTest.Builder(get(ENDPOINT + "/" + artistEntity.getId()),
+            status().isNotFound())
+            .setException(new ResourceNotFoundException("artist"))
+            .build()
     );
   }
 
-  // TODO: sad case tests
+  @Test
+  public void testDeleteNonExisting() throws Exception {
+    this.runTest(
+        new EndpointTest.Builder(
+            delete(ENDPOINT + "/9999"),
+            status().isNotFound()
+        ).setException(new ResourceNotFoundException("artist")).build()
+    );
+  }
+
+  @Test
+  public void testUpdateNonExisting() throws Exception {
+    ArtistPutDTO artistPutDTO = new ArtistPutDTO(
+        "new name",
+        null,
+        null,
+        null
+    );
+
+    this.runTest(
+        new EndpointTest.Builder(put(ENDPOINT + "/9999"),
+            status().isNotFound())
+            .setRequestBody(artistPutDTO)
+            .setException(new ResourceNotFoundException("artist")).build()
+    );
+  }
 }

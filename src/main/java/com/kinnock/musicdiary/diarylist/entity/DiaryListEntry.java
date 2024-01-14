@@ -14,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 @Table
 public class DiaryListEntry {
+  // TODO: refactor to a combo key of id-diaryList-loggable?
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

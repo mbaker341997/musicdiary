@@ -30,7 +30,6 @@ public class DiaryUserDTO {
       Boolean isAdmin,
       LocalDate dateOfBirth
   ) {
-    // TODO: nonnull validations?
     this.id = id;
     this.username = username;
     this.email = email;

@@ -12,10 +12,9 @@ import com.kinnock.musicdiary.diaryuser.dto.DiaryUserPutDTO;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
 import com.kinnock.musicdiary.testutils.BaseControllerTest;
 import com.kinnock.musicdiary.testutils.EndpointTest;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import java.time.LocalDate;
 import java.time.Month;
-
-import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;

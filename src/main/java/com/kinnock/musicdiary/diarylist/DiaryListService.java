@@ -10,11 +10,11 @@ import com.kinnock.musicdiary.diarylist.entity.DiaryList;
 import com.kinnock.musicdiary.diarylist.entity.DiaryListEntry;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
-import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.loggable.LoggableRepository;
 import com.kinnock.musicdiary.loggable.entity.Loggable;
 import com.kinnock.musicdiary.utils.EntityUtils;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -122,14 +122,6 @@ public class DiaryListService {
     DiaryListEntry diaryListEntry = this.diaryListEntryRepository
         .findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("diaryListEntry"));
-
-    EntityUtils.updateNonNullEntityValue(
-        () -> this.loggableRepository
-            .findById(putDTO.getLoggableId())
-            .orElseThrow(() -> new ResourceDoesNotExistException(
-                "loggable", putDTO.getLoggableId())),
-        diaryListEntry::setLoggable
-    );
 
     EntityUtils.updateNonNullEntityValue(putDTO::getNote, diaryListEntry::setNote);
 

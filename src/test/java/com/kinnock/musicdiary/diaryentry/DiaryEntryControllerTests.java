@@ -21,12 +21,11 @@ import com.kinnock.musicdiary.song.SongRepository;
 import com.kinnock.musicdiary.song.entity.Song;
 import com.kinnock.musicdiary.testutils.BaseControllerTest;
 import com.kinnock.musicdiary.testutils.EndpointTest;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
-
-import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
-import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -173,5 +172,58 @@ public class DiaryEntryControllerTests extends BaseControllerTest {
     );
   }
 
-  // Unhappy case test s
+  @Test
+  public void testDeleteNonExisting() throws Exception {
+    this.runTest(
+        new EndpointTest.Builder(
+            delete(ENDPOINT + "/9999"),
+            status().isNotFound()
+        ).setException(new ResourceNotFoundException("diaryEntry")).build()
+    );
+  }
+
+  @Test
+  public void testUpdateNonExisting() throws Exception {
+    DiaryEntryPutDTO diaryEntryPutDTO = new DiaryEntryPutDTO(
+        LocalDate.parse("2023-10-31"),
+        Rating.FOUR,
+        "I have updated my review"
+    );
+
+    this.runTest(
+        new EndpointTest.Builder(put(ENDPOINT + "/9999"),
+            status().isNotFound())
+            .setRequestBody(diaryEntryPutDTO)
+            .setException(new ResourceNotFoundException("diaryEntry")).build()
+    );
+  }
+
+  @Test
+  public void testCreateNonExistingEntities() throws Exception {
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT), status().isUnprocessableEntity())
+            .setRequestBody(new DiaryEntryPostDTO(
+                9999L,
+                song.getId(),
+                LocalDate.parse("2023-11-19"),
+                Rating.FIVE,
+                "a review"
+            ))
+            .setException(new ResourceDoesNotExistException("diaryUser", 9999L))
+            .build()
+    );
+
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT), status().isUnprocessableEntity())
+            .setRequestBody(new DiaryEntryPostDTO(
+                testPostDtoBase.getUserId(),
+                9999L,
+                LocalDate.parse("2023-11-19"),
+                Rating.FIVE,
+                "a review"
+            ))
+            .setException(new ResourceDoesNotExistException("loggable", 9999L))
+            .build()
+    );
+  }
 }

@@ -23,9 +23,12 @@ import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
 import com.kinnock.musicdiary.loggable.LoggableRepository;
 import com.kinnock.musicdiary.testutils.BaseControllerTest;
 import com.kinnock.musicdiary.testutils.EndpointTest;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -99,6 +102,12 @@ public class DiaryListControllerTests extends BaseControllerTest {
 
       initialized = true;
     }
+  }
+
+  @AfterEach
+  public void cleanup() {
+    this.diaryListRepository.deleteAll();
+    this.diaryListEntryRepository.deleteAll();
   }
 
   @Test
@@ -190,14 +199,13 @@ public class DiaryListControllerTests extends BaseControllerTest {
 
     // DiaryListEntry PUT
     DiaryListEntryPutDTO diaryListEntryPutDTO = new DiaryListEntryPutDTO(
-        concert2.getId(),
         2,
         "a new note"
     );
     DiaryListEntryDTO updatedDiaryListEntryDTO = new DiaryListEntryDTO(
         diaryListEntry.getId(),
         diaryListEntryPostDTO.getDiaryListId(),
-        diaryListEntryPutDTO.getLoggableId(),
+        diaryListEntryPostDTO.getLoggableId(),
         diaryListEntryPutDTO.getListIndex(),
         diaryListEntryPutDTO.getNote()
     );
@@ -244,7 +252,7 @@ public class DiaryListControllerTests extends BaseControllerTest {
         new EndpointTest.Builder(
             get(ENDPOINT_DIARY_LIST_ENTRIES + "/" + diaryListEntry.getId()),
             status().isNotFound()
-        ).build()
+        ).setException(new ResourceNotFoundException("diaryListEntry")).build()
     );
 
     // DiaryList GET no more entry
@@ -268,9 +276,95 @@ public class DiaryListControllerTests extends BaseControllerTest {
         new EndpointTest.Builder(
             get(ENDPOINT_DIARY_LIST + "/" + diaryList.getId()),
             status().isNotFound()
-        ).build()
+        ).setException(new ResourceNotFoundException("diaryList")).build()
     );
   }
 
-  // TODO: unhappy case tests
+  @Test
+  public void testDeleteNonExisting() throws Exception {
+    this.runTest(
+        new EndpointTest.Builder(
+            delete(ENDPOINT_DIARY_LIST + "/9999"),
+            status().isNotFound()
+        ).setException(new ResourceNotFoundException("diaryList")).build()
+    );
+
+    this.runTest(
+        new EndpointTest.Builder(
+            delete(ENDPOINT_DIARY_LIST_ENTRIES + "/9999"),
+            status().isNotFound()
+        ).setException(new ResourceNotFoundException("diaryListEntry")).build()
+    );
+  }
+
+  @Test
+  public void testUpdateNonExisting() throws Exception {
+    DiaryListPutDTO diaryListPutDTO = new DiaryListPutDTO(
+        "a new title",
+        "a new description"
+    );
+    this.runTest(
+        new EndpointTest.Builder(put(ENDPOINT_DIARY_LIST + "/9999"),
+            status().isNotFound())
+            .setRequestBody(diaryListPutDTO)
+            .setException(new ResourceNotFoundException("diaryList"))
+            .build()
+    );
+
+    DiaryListEntryPutDTO diaryListEntryPutDTO = new DiaryListEntryPutDTO(
+        2,
+        "a new note"
+    );
+    this.runTest(
+        new EndpointTest.Builder(put(ENDPOINT_DIARY_LIST_ENTRIES + "/9999"),
+            status().isNotFound())
+            .setRequestBody(diaryListEntryPutDTO)
+            .setException(new ResourceNotFoundException("diaryListEntry"))
+            .build()
+    );
+  }
+
+  @Test
+  public void testCreateForNonExistingEntities() throws Exception {
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT_DIARY_LIST), status().isUnprocessableEntity())
+            .setRequestBody(new DiaryListPostDTO(
+                9999L,
+                "TEST LIST ",
+                "diary user dont exist "
+            ))
+            .setException(new ResourceDoesNotExistException("diaryUser", 9999L))
+            .build()
+    );
+
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT_DIARY_LIST_ENTRIES), status().isUnprocessableEntity())
+            .setRequestBody(new DiaryListEntryPostDTO(
+                9999L,
+                concert1.getId(),
+                0,
+                "diary list dont exist"
+            ))
+            .setException(new ResourceDoesNotExistException("diaryList", 9999L))
+            .build()
+    );
+
+    DiaryList diaryList = this.diaryListRepository.save(new DiaryList(
+      testUser,
+      List.of(),
+      "foo",
+      "bar"
+    ));
+    this.runTest(
+        new EndpointTest.Builder(post(ENDPOINT_DIARY_LIST_ENTRIES), status().isUnprocessableEntity())
+            .setRequestBody(new DiaryListEntryPostDTO(
+                diaryList.getId(),
+                9999L,
+                0,
+                "diary list dont exist"
+            ))
+            .setException(new ResourceDoesNotExistException("loggable", 9999L))
+            .build()
+    );
+  }
 }
