@@ -27,11 +27,11 @@ public abstract class Loggable {
 
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "diary_user_id", nullable = false)
+  @JoinColumn(name = "submitted_by_id", nullable = false)
   private DiaryUser submittedBy;
 
   @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(name="loggable_artists")
+  @JoinTable(name="loggable_artist")
   private Set<Artist> artists;
 
   private String title;

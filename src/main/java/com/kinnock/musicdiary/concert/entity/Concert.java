@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Entity
 public class Concert extends Loggable {
-  private LocalDate date;
+  private LocalDate concertDate;
   // TODO: have this be in a DB somewhere?
   private String venue;
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "concert")
@@ -27,22 +27,22 @@ public class Concert extends Loggable {
       DiaryUser submittedBy,
       Set<Artist> artists,
       String title,
-      LocalDate date,
+      LocalDate concertDate,
       String venue,
       List<SetListItem> setListItems
   ) {
     super(submittedBy, artists, title);
-    this.date = date;
+    this.concertDate = concertDate;
     this.venue = venue;
     this.setListItems = setListItems;
   }
 
-  public LocalDate getDate() {
-    return date;
+  public LocalDate getConcertDate() {
+    return concertDate;
   }
 
-  public void setDate(LocalDate date) {
-    this.date = date;
+  public void setConcertDate(LocalDate concertDate) {
+    this.concertDate = concertDate;
   }
 
   public String getVenue() {

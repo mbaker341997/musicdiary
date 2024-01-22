@@ -18,7 +18,7 @@ public class ConcertDTO {
   private final List<Long> artistIds;
   private final String title;
   @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)
-  private final LocalDate date;
+  private final LocalDate concertDate;
   private final String venue;
   private final List<SetListItemDTO> setList;
 
@@ -28,7 +28,7 @@ public class ConcertDTO {
       Long submittedById,
       List<Long> artistIds,
       String title,
-      LocalDate date,
+      LocalDate concertDate,
       String venue,
       List<SetListItemDTO> setList
   ) {
@@ -36,7 +36,7 @@ public class ConcertDTO {
     this.submittedById = submittedById;
     this.artistIds = artistIds;
     this.title = title;
-    this.date = date;
+    this.concertDate = concertDate;
     this.venue = venue;
     this.setList = setList;
   }
@@ -47,7 +47,7 @@ public class ConcertDTO {
         concert.getSubmittedBy().getId(),
         concert.getArtists().stream().map(Artist::getId).toList(),
         concert.getTitle(),
-        concert.getDate(),
+        concert.getConcertDate(),
         concert.getVenue(),
         concert.getSetListItems().stream().map(SetListItemDTO::new).toList()
     );
@@ -69,8 +69,8 @@ public class ConcertDTO {
     return title;
   }
 
-  public LocalDate getDate() {
-    return date;
+  public LocalDate getConcertDate() {
+    return concertDate;
   }
 
   public String getVenue() {

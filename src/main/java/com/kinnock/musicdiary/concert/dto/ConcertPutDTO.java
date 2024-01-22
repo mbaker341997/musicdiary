@@ -13,19 +13,19 @@ public class ConcertPutDTO {
   private final List<Long> artistIds;
   private final String title;
   @JsonFormat(shape = Shape.STRING, pattern = DateTimeUtils.LOCAL_DATE_FORMAT)
-  private final LocalDate date;
+  private final LocalDate concertDate;
   private final String venue;
 
   @JsonCreator
   public ConcertPutDTO(
       List<Long> artistIds,
       String title,
-      LocalDate date,
+      LocalDate concertDate,
       String venue
   ) {
     this.artistIds = artistIds;
     this.title = title;
-    this.date = date;
+    this.concertDate = concertDate;
     this.venue = venue;
   }
 
@@ -37,8 +37,8 @@ public class ConcertPutDTO {
     return title;
   }
 
-  public LocalDate getDate() {
-    return date;
+  public LocalDate getConcertDate() {
+    return concertDate;
   }
 
   public String getVenue() {

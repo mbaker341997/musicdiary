@@ -53,7 +53,7 @@ public class SongControllerTests extends BaseControllerTest {
   private static SongPostDTO testPostDtoBase;
   private static Artist testArtist1;
   private static Artist testArtist2;
-  private static final boolean initialized = false;
+  private static boolean initialized = false;
 
   @BeforeEach
   public void beforeEach() {
@@ -97,6 +97,7 @@ public class SongControllerTests extends BaseControllerTest {
           "lyricsUrl",
           1
       );
+      initialized = true;
     }
   }
 

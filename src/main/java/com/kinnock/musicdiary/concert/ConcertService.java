@@ -8,10 +8,10 @@ import com.kinnock.musicdiary.concert.dto.ConcertPutDTO;
 import com.kinnock.musicdiary.concert.entity.Concert;
 import com.kinnock.musicdiary.diaryuser.DiaryUserRepository;
 import com.kinnock.musicdiary.diaryuser.entity.DiaryUser;
-import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
-import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import com.kinnock.musicdiary.setlistitem.SetListItemRepository;
 import com.kinnock.musicdiary.utils.EntityUtils;
+import com.kinnock.musicdiary.utils.exception.ResourceDoesNotExistException;
+import com.kinnock.musicdiary.utils.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
@@ -61,7 +61,7 @@ public class ConcertService {
         diaryUser,
         artists.stream().collect(Collectors.toUnmodifiableSet()),
         concertPostDTO.getTitle(),
-        concertPostDTO.getDate(),
+        concertPostDTO.getConcertDate(),
         concertPostDTO.getVenue(),
         List.of()
     );
@@ -109,7 +109,7 @@ public class ConcertService {
 
     EntityUtils.updateNonBlankStringValue(concertPutDTO::getTitle, concert::setTitle);
 
-    EntityUtils.updateNonNullEntityValue(concertPutDTO::getDate, concert::setDate);
+    EntityUtils.updateNonNullEntityValue(concertPutDTO::getConcertDate, concert::setConcertDate);
 
     EntityUtils.updateNonNullEntityValue(concertPutDTO::getVenue, concert::setVenue);
 

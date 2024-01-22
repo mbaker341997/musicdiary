@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity
 public class Song extends Loggable {
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "album_id")
+  @JoinColumn(name = "song_album_id")
   private Album album;
 
   // in seconds

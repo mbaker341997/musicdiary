@@ -98,7 +98,7 @@ public class ConcertControllerTests extends BaseControllerTest {
         concert.getSubmittedBy().getId(),
         List.of(testArtist1.getId()),
         concert.getTitle(),
-        concert.getDate(),
+        concert.getConcertDate(),
         concert.getVenue(),
         List.of()
     );
@@ -123,7 +123,7 @@ public class ConcertControllerTests extends BaseControllerTest {
         testUser.getId(),
         concertPutDTO.getArtistIds(),
         concertPutDTO.getTitle(),
-        concertPutDTO.getDate(),
+        concertPutDTO.getConcertDate(),
         concertPutDTO.getVenue(),
         List.of()
     );
@@ -155,7 +155,7 @@ public class ConcertControllerTests extends BaseControllerTest {
         testUser.getId(),
         concertPutDTO.getArtistIds(),
         concertPutDTO.getTitle(),
-        concertPutDTO.getDate(),
+        concertPutDTO.getConcertDate(),
         concertPutDTO.getVenue(),
         List.of(new SetListItemDTO(
             setListItem.getId(),
@@ -225,7 +225,7 @@ public class ConcertControllerTests extends BaseControllerTest {
         testUser,
         Set.of(testArtist1),
         "Update To Non Existent Test",
-        testPostDtoBase.getDate(),
+        testPostDtoBase.getConcertDate(),
         testPostDtoBase.getVenue(),
         List.of()
     );
